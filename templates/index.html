@@ -1,29 +1,29 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Usuários</title>
+    <title>Lista de Carros</title>
   </head>
   <body>
-    <h1>Lista de Usuários</h1>
+    <h1>Lista de Carros</h1>
     <table border="1">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Nome</th>
-          <th>Email</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for user in users %}
-        <tr>
-          <td>{{ user[0] }}</td>
-          <td>{{ user[1] }}</td>
-          <td>{{ user[2] }}</td>
-        </tr>
-        {% endfor %}
-      </tbody>
+      <tr>
+        <th>ID</th>
+        <th>Modelo</th>
+        <th>Ano</th>
+        <th>Marca</th>
+        <th>Disponibilidade</th>
+      </tr>
+      {% for carro in carros %}
+      <tr>
+        <td>{{ carro.ID }}</td>
+        <td>{{ carro.MODELO }}</td>
+        <td>{{ carro.ANO }}</td>
+        <td>{{ carro.MARCA }}</td>
+        <td>{{ carro.DISPONIBILIDADE }}</td>
+      </tr>
+      {% endfor %}
     </table>
+    <a href="/">Voltar</a>
   </body>
 </html>

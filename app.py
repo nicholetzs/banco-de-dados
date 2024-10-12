@@ -3,31 +3,32 @@ import mysql.connector
 
 app = Flask(__name__)
 
-# Configurando a conexão com o MySQL
-def get_db_connection():
-    conn = mysql.connector.connect(
-        host="localhost",
-        user="Nichole",
-        password="cafe123456",
-        database="nome_do_banco"
-    )
-    return conn
+# Configurações do banco de dados
+db_config = {
+    'user': 'root',
+    'password': 'cafe123456',
+    'host': 'localhost',
+    'database': 'DBAUTOCAR',
+}
 
-# Rota principal (homepage)
+# Função para obter a conexão
+def get_db_connection():
+    return mysql.connector.connect(**db_config)
+
+# Rota para listar carros
 @app.route('/')
 def index():
-    conn = get_db_connection()
-    cursor = conn.cursor()
+    return render_template('index.html')  # Você pode redirecionar para a rota de listagem de carros, se preferir
 
-    # Consulta ao banco de dados
-    cursor.execute("SELECT * FROM USERS")  # Alterar conforme sua tabela
-    users = cursor.fetchall()
+def list_carros():
+    connection = get_db_connection()  # Obtém a conexão
+    cursor = connection.cursor(dictionary=True)  # Cria um cursor
+    cursor.execute('SELECT * FROM CARROS')  # Executa a consulta SQL
+    carros = cursor.fetchall()  # Recupera todos os registros
+    cursor.close()  # Fecha o cursor
+    connection.close()  # Fecha a conexão
     
-    cursor.close()
-    conn.close()
-
-    # Renderiza o template e passa os dados do banco
-    return render_template('index.html', users=users)
+    return render_template('index.html', carros=carros)  # Renderiza o template
 
 if __name__ == '__main__':
     app.run(debug=True)
