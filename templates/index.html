@@ -3,27 +3,84 @@
   <head>
     <meta charset="UTF-8" />
     <title>Lista de Carros</title>
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
   </head>
   <body>
-    <h1>Lista de Carros</h1>
-    <table border="1">
-      <tr>
-        <th>ID</th>
-        <th>Modelo</th>
-        <th>Ano</th>
-        <th>Marca</th>
-        <th>Disponibilidade</th>
-      </tr>
-      {% for carro in carros %}
-      <tr>
-        <td>{{ carro.ID }}</td>
-        <td>{{ carro.MODELO }}</td>
-        <td>{{ carro.ANO }}</td>
-        <td>{{ carro.MARCA }}</td>
-        <td>{{ carro.DISPONIBILIDADE }}</td>
-      </tr>
-      {% endfor %}
-    </table>
-    <a href="/">Voltar</a>
+    <div class="container">
+      <h1>Lista de Carros</h1>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Modelo</th>
+            <th>Ano</th>
+            <th>Marca</th>
+            <th>Disponibilidade</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for carro in carros %}
+          <tr>
+            <td>{{ carro.ID }}</td>
+            <td>{{ carro.MODELO }}</td>
+            <td>{{ carro.ANO }}</td>
+            <td>{{ carro.MARCA }}</td>
+            <td>{{ carro.DISPONIBILIDADE }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      <h2>Adicionar Carro</h2>
+      <form action="/add_carro" method="post">
+        <div class="form-group">
+          <input
+            type="number"
+            name="id"
+            placeholder="ID"
+            class="form-control"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <input
+            type="text"
+            name="modelo"
+            placeholder="Modelo"
+            class="form-control"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <input
+            type="number"
+            name="ano"
+            placeholder="Ano"
+            class="form-control"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <input
+            type="text"
+            name="marca"
+            placeholder="Marca"
+            class="form-control"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label>Disponível:</label>
+          <input type="checkbox" name="disponibilidade" checked />
+        </div>
+        <button type="submit" class="btn btn-primary">Adicionar Carro</button>
+      </form>
+
+      <a href="/clientes">Ver Clientes</a>
+      <a href="/locacoes">Ver Locações</a>
+    </div>
   </body>
 </html>
