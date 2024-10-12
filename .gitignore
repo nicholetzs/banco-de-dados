@@ -1,0 +1,30 @@
+# Ignorar arquivos de configuração do ambiente
+.env
+.env.local
+.env.development
+.env.production
+.env.test
+
+# Ignorar pastas de ambientes virtuais
+venv/
+.venv/
+env/
+.env/
+# Se você usa pipenv
+Pipfile.lock
+
+# Ignorar arquivos de configuração do editor
+.vscode/
+
+# Ignorar arquivos de cache
+__pycache__/
+*.pyc
+
+# Ignorar arquivos de log
+*.log
+
+# Ignorar banco de dados SQLite (se usado)
+*.sqlite3
+
+# Ignorar pastas de testes
+tests/
