@@ -34,53 +34,95 @@
         </tbody>
       </table>
 
-      <h2>Adicionar Carro</h2>
-      <form action="/add_carro" method="post">
-        <div class="form-group">
-          <input
-            type="number"
-            name="id"
-            placeholder="ID"
-            class="form-control"
-            required
-          />
+      <!-- Botão para abrir o modal -->
+      <button
+        type="button"
+        class="btn btn-primary"
+        data-toggle="modal"
+        data-target="#addCarModal"
+      >
+        Adicionar Carro
+      </button>
+
+      <!-- Modal -->
+      <div
+        class="modal fade"
+        id="addCarModal"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="addCarModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="addCarModalLabel">Adicionar Carro</h5>
+              <button
+                type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close"
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <form action="/add_carro" method="post">
+                <div class="form-group">
+                  <input
+                    type="number"
+                    name="id"
+                    placeholder="ID"
+                    class="form-control"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <input
+                    type="text"
+                    name="modelo"
+                    placeholder="Modelo"
+                    class="form-control"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <input
+                    type="number"
+                    name="ano"
+                    placeholder="Ano"
+                    class="form-control"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <input
+                    type="text"
+                    name="marca"
+                    placeholder="Marca"
+                    class="form-control"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label>Disponível:</label>
+                  <input type="checkbox" name="disponibilidade" checked />
+                </div>
+                <button type="submit" class="btn btn-primary">
+                  Adicionar Carro
+                </button>
+              </form>
+            </div>
+          </div>
         </div>
-        <div class="form-group">
-          <input
-            type="text"
-            name="modelo"
-            placeholder="Modelo"
-            class="form-control"
-            required
-          />
-        </div>
-        <div class="form-group">
-          <input
-            type="number"
-            name="ano"
-            placeholder="Ano"
-            class="form-control"
-            required
-          />
-        </div>
-        <div class="form-group">
-          <input
-            type="text"
-            name="marca"
-            placeholder="Marca"
-            class="form-control"
-            required
-          />
-        </div>
-        <div class="form-group">
-          <label>Disponível:</label>
-          <input type="checkbox" name="disponibilidade" checked />
-        </div>
-        <button type="submit" class="btn btn-primary">Adicionar Carro</button>
-      </form>
+      </div>
 
       <a href="/clientes">Ver Clientes</a>
       <a href="/locacoes">Ver Locações</a>
     </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
   </body>
 </html>
