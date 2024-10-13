@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for
 import mysql.connector
+import uuid  # Para gerar UUIDs
 
 app = Flask(__name__)
 
@@ -30,7 +31,8 @@ def list_carros():
 # Rota para adicionar um carro
 @app.route('/add_carro', methods=['POST'])
 def add_carro():
-    id = request.form['id']  # Obtém o ID do carro
+    # Gera um UUID automaticamente, sem parâmetros
+    carro_id = str(uuid.uuid4())
     modelo = request.form['modelo']
     ano = request.form['ano']
     marca = request.form['marca']
@@ -39,10 +41,10 @@ def add_carro():
     connection = get_db_connection()
     cursor = connection.cursor()
 
-    # Comando para inserir um carro (ID não é necessário porque é AUTO_INCREMENT)
+    # Comando para inserir um carro com UUID
     cursor.execute(
-    'INSERT INTO CARROS (ID, MODELO, ANO, MARCA, DISPONIBILIDADE) VALUES (%s, %s, %s, %s, %s)',
-    (id, modelo, ano, marca, disponibilidade)
+        'INSERT INTO CARROS (ID, MODELO, ANO, MARCA, DISPONIBILIDADE) VALUES (%s, %s, %s, %s, %s)',
+        (carro_id, modelo, ano, marca, disponibilidade)
     )
     connection.commit()  # Confirma a transação
     cursor.close()  # Fecha o cursor
