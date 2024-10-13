@@ -1,0 +1,33 @@
+body {
+  --sb-track-color: #343f44; /* Cor da trilha da scrollbar */
+  --sb-thumb-color: #1c1c3a; /* Cor do polegar da scrollbar */
+  --sb-size: 8px; /* Largura da scrollbar */
+}
+
+body::-webkit-scrollbar {
+  width: var(--sb-size);
+  height: var(--sb-size);
+}
+
+body::-webkit-scrollbar-track {
+  background: var(--sb-track-color);
+  border-radius: 12px;
+}
+
+body::-webkit-scrollbar-thumb {
+  background: var(--sb-thumb-color);
+  border-radius: 12px;
+  border: 2px solid transparent;
+}
+
+/* Efeito de hover na scrollbar */
+body::-webkit-scrollbar-thumb:hover {
+  background: #2c2c4a;
+}
+
+/* Estilo para navegadores que não suportam o seletor ::-webkit-scrollbar */
+@supports not selector(::-webkit-scrollbar) {
+  body {
+    scrollbar-color: var(--sb-thumb-color) var(--sb-track-color);
+  }
+}
