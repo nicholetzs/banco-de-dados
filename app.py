@@ -30,8 +30,7 @@ def list_carros():
 # Rota para adicionar um carro
 @app.route('/add_carro', methods=['POST'])
 def add_carro():
-    # Pega o ID do carro do formulário
-    carro_id = request.form['id']  # ID é fornecido manualmente
+    # Agora o ID será gerado automaticamente
     modelo = request.form['modelo']
     ano = request.form['ano']
     marca = request.form['marca']
@@ -40,16 +39,26 @@ def add_carro():
     connection = get_db_connection()
     cursor = connection.cursor()
 
-    # Comando para inserir um carro com ID fornecido pelo usuário
+    # Inserção sem o ID, já que será gerado automaticamente
     cursor.execute(
-        'INSERT INTO CARROS (ID, MODELO, ANO, MARCA, DISPONIBILIDADE) VALUES (%s, %s, %s, %s, %s)',
-        (carro_id, modelo, ano, marca, disponibilidade)
+        'INSERT INTO CARROS (MODELO, ANO, MARCA, DISPONIBILIDADE) VALUES (%s, %s, %s, %s)',
+        (modelo, ano, marca, disponibilidade)
     )
     connection.commit()  # Confirma a transação
     cursor.close()  # Fecha o cursor
     connection.close()  # Fecha a conexão
 
     return redirect(url_for('list_carros'))  # Redireciona para a lista de carros
+
+@app.route('/delete_carro/<int:carro_id>', methods=['POST'])
+def delete_carro(carro_id):
+    connection = get_db_connection()
+    cursor = connection.cursor()
+    cursor.execute('DELETE FROM CARROS WHERE ID = %s', (carro_id,))
+    connection.commit()
+    cursor.close()
+    connection.close()
+    return redirect(url_for('list_carros'))
 
 if __name__ == '__main__':
     app.run(debug=True)
