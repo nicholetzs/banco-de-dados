@@ -38,15 +38,16 @@
     </script>
   </head>
   <body class="min-h-screen bg-background text-gray-200 font-sans">
-    <nav class="bg-surface shadow-lg">
-      <div class="container mx-auto px-4">
-        <div class="flex justify-between items-center py-4">
-          <div class="flex items-center">
+    <div class="flex h-screen">
+      <!-- Sidebar -->
+      <nav class="bg-surface shadow-lg w-64 h-full">
+        <div class="px-4 py-6">
+          <div class="flex items-center mb-6">
             <span class="text-2xl font-bold text-primary">
               <i class="fas fa-car-side mr-2"></i>AutoRent
             </span>
           </div>
-          <div class="hidden md:flex space-x-4">
+          <div class="flex flex-col space-y-4">
             <a
               href="#"
               class="text-gray-300 hover:text-primary transition duration-300"
@@ -68,149 +69,397 @@
               >Contato</a
             >
           </div>
-          <div class="md:hidden">
-            <button class="text-gray-300 hover:text-primary">
-              <i class="fas fa-bars"></i>
-            </button>
-          </div>
         </div>
-      </div>
-    </nav>
+      </nav>
 
-    <div class="container mx-auto px-4 py-8">
-      <h1 class="text-4xl font-bold mb-8 text-center text-primary">
-        Nossos Carros
-      </h1>
+      <!-- Main Content Area -->
+      <div class="flex-1 p-10">
+        <!-- Your main content goes here -->
+        <h1 class="text-2xl font-bold mb-4">Welcome to AutoRent</h1>
+        <div class="container mx-auto px-4 py-8">
+          <h1 class="text-4xl font-bold mb-8 text-center text-primary">
+            Nossos Carros
+          </h1>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {% for carro in carros %}
-        <div
-          class="bg-surface rounded-lg p-6 shadow-md hover:shadow-lg transition duration-300"
-        >
-          <h2 class="text-2xl font-semibold mb-4 text-primary">
-            {{ carro.MODELO }}
-          </h2>
-          <p class="mb-2">
-            <span class="font-medium text-gray-400">ID:</span> {{ carro.ID }}
-          </p>
-          <p class="mb-2">
-            <span class="font-medium text-gray-400">Ano:</span> {{ carro.ANO }}
-          </p>
-          <p class="mb-2">
-            <span class="font-medium text-gray-400">Marca:</span> {{ carro.MARCA
-            }}
-          </p>
-          <p class="mb-4">
-            <span class="font-medium text-gray-400">Disponibilidade:</span>
-            <span
-              class="ml-2 px-2 py-1 rounded-full text-xs font-semibold {% if carro.DISPONIBILIDADE %}bg-secondary text-gray-900{% else %}bg-red-500 text-white{% endif %}"
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for carro in carros %}
+            <div
+              class="bg-surface rounded-lg p-6 shadow-md hover:shadow-lg transition duration-300"
             >
-              {% if carro.DISPONIBILIDADE %}Disponível{% else %}Indisponível{%
-              endif %}
-            </span>
-          </p>
-          <button
-            class="bg-primary text-white py-2 px-4 rounded-lg w-full hover:bg-primary-600 transition duration-300"
-          >
-            Alugar
-          </button>
-          <!-- Formulário para excluir o carro -->
-          <form
-            action="/delete_carro/{{ carro.ID }}"
-            method="post"
-            class="mt-4"
-          >
-            <button
-              type="submit"
-              class="bg-red-600 text-white py-2 px-4 rounded-lg w-full hover:bg-red-700 transition duration-300"
-            >
-              Excluir Carro
-            </button>
-          </form>
-        </div>
-        {% endfor %}
-      </div>
+              <h2 class="text-2xl font-semibold mb-4 text-primary">
+                {{ carro.MODELO }}
+              </h2>
+              <p class="mb-2">
+                <span class="font-medium text-gray-400">ID:</span> {{ carro.ID
+                }}
+              </p>
+              <p class="mb-2">
+                <span class="font-medium text-gray-400">Ano:</span> {{ carro.ANO
+                }}
+              </p>
+              <p class="mb-2">
+                <span class="font-medium text-gray-400">Marca:</span> {{
+                carro.MARCA }}
+              </p>
+              <p class="mb-4">
+                <span class="font-medium text-gray-400">Disponibilidade:</span>
+                <span
+                  class="ml-2 px-2 py-1 rounded-full text-xs font-semibold {% if carro.DISPONIBILIDADE %}bg-secondary text-gray-900{% else %}bg-red-500 text-white{% endif %}"
+                >
+                  {% if carro.DISPONIBILIDADE %}Disponível{% else
+                  %}Indisponível{% endif %}
+                </span>
+              </p>
+              <button
+                class="bg-primary text-white py-2 px-4 rounded-lg w-full hover:bg-primary-600 transition duration-300"
+                data-bs-toggle="modal"
+                data-bs-target="#rentCarModal"
+              >
+                Alugar
+              </button>
 
-      <div class="mt-8 text-center">
-        <button
-          type="button"
-          class="bg-accent text-white py-2 px-6 rounded-lg text-lg hover:bg-accent-600 transition duration-300"
-          data-bs-toggle="modal"
-          data-bs-target="#addCarModal"
-        >
-          <i class="fas fa-plus mr-2"></i>Adicionar Carro
-        </button>
-      </div>
+              <!-- Modal para Cadastrar Cliente -->
+              <div
+                class="modal fade"
+                id="rentCarModal"
+                tabindex="-1"
+                aria-labelledby="rentCarModalLabel"
+                aria-hidden="true"
+              >
+                <div class="modal-dialog modal-dialog-centered">
+                  <div class="modal-content bg-surface text-gray-200">
+                    <div class="modal-header border-b border-gray-700">
+                      <h5
+                        class="modal-title text-primary"
+                        id="rentCarModalLabel"
+                      >
+                        Cadastrar Cliente
+                      </h5>
+                      <button
+                        type="button"
+                        class="btn-close btn-close-white"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"
+                      ></button>
+                    </div>
+                    <div class="modal-body">
+                      <form
+                        action="/alugar_carro/{{ carro.ID }}"
+                        method="post"
+                        class="space-y-4"
+                      >
+                        <div class="mb-3">
+                          <input
+                            type="text"
+                            name="nome"
+                            placeholder="Nome"
+                            class="form-control bg-blue-900 text-white border-gray-700"
+                            required
+                          />
+                        </div>
+                        <div class="mb-3">
+                          <input
+                            type="text"
+                            name="numero_cnh"
+                            placeholder="Número da CNH"
+                            class="form-control bg-blue-900 text-white border-gray-700"
+                            required
+                          />
+                        </div>
+                        <div class="mb-3">
+                          <input
+                            type="text"
+                            name="numero_cartao_credito"
+                            placeholder="Número do Cartão de Crédito"
+                            class="form-control bg-blue-900 text-white border-gray-700"
+                            required
+                          />
+                        </div>
+                        <div class="mb-3">
+                          <input
+                            type="text"
+                            name="telefone"
+                            placeholder="Telefone"
+                            class="form-control bg-blue-900 text-white border-gray-700"
+                            required
+                          />
+                        </div>
+                        <div class="mb-3">
+                          <input
+                            type="email"
+                            name="email"
+                            placeholder="Email"
+                            class="form-control bg-blue-900 text-white border-gray-700"
+                            required
+                          />
+                        </div>
+                        <button
+                          type="submit"
+                          class="w-full bg-primary text-white py-2 px-4 rounded-lg hover:bg-primary-600 transition duration-300"
+                        >
+                          Alugar Carro
+                        </button>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
-      <!-- Modal do Bootstrap -->
-      <div
-        class="modal fade"
-        id="addCarModal"
-        tabindex="-1"
-        aria-labelledby="addCarModalLabel"
-        aria-hidden="true"
-      >
-        <div class="modal-dialog modal-dialog-centered">
-          <div class="modal-content bg-surface text-gray-200">
-            <div class="modal-header border-b border-gray-700">
-              <h5 class="modal-title text-primary" id="addCarModalLabel">
-                Adicionar Carro
-              </h5>
+              <!-- Formulário para excluir o carro -->
               <button
                 type="button"
-                class="btn-close btn-close-white"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
+                class="text-red-600 hover:text-red-800 transition"
+                data-bs-toggle="modal"
+                data-bs-target="#deleteCarModal{{ carro.ID }}"
+              >
+                <i class="fas fa-trash"></i>
+              </button>
+              <!-- Modal de Confirmação de Exclusão -->
+              <div
+                class="modal fade"
+                id="deleteCarModal{{ carro.ID }}"
+                tabindex="-1"
+                aria-labelledby="deleteCarModalLabel{{ carro.ID }}"
+                aria-hidden="true"
+              >
+                <div class="modal-dialog modal-dialog-centered">
+                  <div class="modal-content bg-surface text-gray-200">
+                    <div class="modal-header border-b border-gray-700">
+                      <h5
+                        class="modal-title text-red-600"
+                        id="deleteCarModalLabel{{ carro.ID }}"
+                      >
+                        Confirmar Exclusão
+                      </h5>
+                      <button
+                        type="button"
+                        class="btn-close btn-close-white"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"
+                      ></button>
+                    </div>
+                    <div class="modal-body">
+                      <p>
+                        Você tem certeza que deseja excluir o carro
+                        <strong>{{ carro.MODELO }}</strong>?
+                      </p>
+                    </div>
+                    <div class="modal-footer">
+                      <button
+                        type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal"
+                      >
+                        Cancelar
+                      </button>
+                      <form action="/delete_carro/{{ carro.ID }}" method="post">
+                        <button type="submit" class="btn btn-danger">
+                          Excluir Carro
+                        </button>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Modal de Edição de Carro -->
+              <button
+                type="button"
+                class="text-blue-500 hover:text-blue-700 transition"
+                data-bs-toggle="modal"
+                data-bs-target="#editCarModal{{ carro.ID }}"
+              >
+                <i class="fas fa-edit"></i>
+              </button>
+
+              <div
+                class="modal fade"
+                id="editCarModal{{ carro.ID }}"
+                tabindex="-1"
+                aria-labelledby="editCarModalLabel{{ carro.ID }}"
+                aria-hidden="true"
+              >
+                <div class="modal-dialog modal-dialog-centered">
+                  <div class="modal-content bg-surface text-gray-200">
+                    <div class="modal-header border-b border-gray-700">
+                      <h5
+                        class="modal-title text-primary"
+                        id="editCarModalLabel{{ carro.ID }}"
+                      >
+                        Editar Carro
+                      </h5>
+                      <button
+                        type="button"
+                        class="btn-close btn-close-white"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"
+                      ></button>
+                    </div>
+                    <div class="modal-body">
+                      <form
+                        action="/edit_carro/{{ carro.ID }}"
+                        method="post"
+                        class="space-y-4"
+                      >
+                        <div class="mb-3">
+                          <label for="modelo" class="form-label text-gray-400"
+                            >Modelo</label
+                          >
+                          <input
+                            type="text"
+                            id="modelo"
+                            name="modelo"
+                            value="{{ carro.MODELO }}"
+                            placeholder="Modelo"
+                            class="form-control bg-blue-900 text-white border-gray-700"
+                            required
+                          />
+                        </div>
+                        <div class="mb-3">
+                          <label for="ano" class="form-label text-gray-400"
+                            >Ano</label
+                          >
+                          <input
+                            type="number"
+                            id="ano"
+                            name="ano"
+                            value="{{ carro.ANO }}"
+                            placeholder="Ano"
+                            class="form-control bg-blue-900 text-white border-gray-700"
+                            required
+                          />
+                        </div>
+                        <div class="mb-3">
+                          <label for="marca" class="form-label text-gray-400"
+                            >Marca</label
+                          >
+                          <input
+                            type="text"
+                            id="marca"
+                            name="marca"
+                            value="{{ carro.MARCA }}"
+                            placeholder="Marca"
+                            class="form-control bg-blue-900 text-white border-gray-700"
+                            required
+                          />
+                        </div>
+                        <div class="form-check">
+                          <input
+                            type="checkbox"
+                            id="disponivel"
+                            name="disponibilidade"
+                            class="form-check-input bg-blue-900 border-gray-700"
+                            {%
+                            if
+                            carro.DISPONIBILIDADE
+                            %}checked{%
+                            endif
+                            %}
+                          />
+                          <label
+                            class="form-check-label text-gray-400"
+                            for="disponivel"
+                          >
+                            Disponível
+                          </label>
+                        </div>
+                        <button
+                          type="submit"
+                          class="w-full bg-primary text-white py-2 px-4 rounded-lg hover:bg-primary-600 transition duration-300"
+                        >
+                          <i class="fas fa-save mr-2"></i>Salvar Alterações
+                        </button>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div class="modal-body">
-              <form action="/add_carro" method="post" class="space-y-4">
-                <div class="mb-3">
-                  <input
-                    type="text"
-                    name="modelo"
-                    placeholder="Modelo"
-                    class="form-control bg-blue-900 text-white border-gray-700"
-                    required
-                  />
+            {% endfor %}
+          </div>
+
+          <div class="mt-8 text-center">
+            <button
+              type="button"
+              class="bg-accent text-white py-2 px-6 rounded-lg text-lg hover:bg-accent-600 transition duration-300"
+              data-bs-toggle="modal"
+              data-bs-target="#addCarModal"
+            >
+              <i class="fas fa-plus mr-2"></i>Adicionar Carro
+            </button>
+          </div>
+
+          <!-- Modal do Bootstrap -->
+          <div
+            class="modal fade"
+            id="addCarModal"
+            tabindex="-1"
+            aria-labelledby="addCarModalLabel"
+            aria-hidden="true"
+          >
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content bg-surface text-gray-200">
+                <div class="modal-header border-b border-gray-700">
+                  <h5 class="modal-title text-primary" id="addCarModalLabel">
+                    Adicionar Carro
+                  </h5>
+                  <button
+                    type="button"
+                    class="btn-close btn-close-white"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                  ></button>
                 </div>
-                <div class="mb-3">
-                  <input
-                    type="number"
-                    name="ano"
-                    placeholder="Ano"
-                    class="form-control bg-blue-900 text-white border-gray-700"
-                    required
-                  />
+                <div class="modal-body">
+                  <form action="/add_carro" method="post" class="space-y-4">
+                    <div class="mb-3">
+                      <input
+                        type="text"
+                        name="modelo"
+                        placeholder="Modelo"
+                        class="form-control bg-blue-900 text-white border-gray-700"
+                        required
+                      />
+                    </div>
+                    <div class="mb-3">
+                      <input
+                        type="number"
+                        name="ano"
+                        placeholder="Ano"
+                        class="form-control bg-blue-900 text-white border-gray-700"
+                        required
+                      />
+                    </div>
+                    <div class="mb-3">
+                      <input
+                        type="text"
+                        name="marca"
+                        placeholder="Marca"
+                        class="form-control bg-blue-900 text-white border-gray-700"
+                        required
+                      />
+                    </div>
+                    <div class="form-check">
+                      <input
+                        type="checkbox"
+                        name="disponibilidade"
+                        class="form-check-input bg-blue-900 border-gray-700"
+                        id="disponivel"
+                        checked
+                      />
+                      <label class="form-check-label" for="disponivel"
+                        >Disponível</label
+                      >
+                    </div>
+                    <button
+                      type="submit"
+                      class="w-full bg-primary text-white py-2 px-4 rounded-lg hover:bg-primary-600 transition duration-300"
+                    >
+                      <i class="fas fa-plus mr-2"></i>Adicionar Carro
+                    </button>
+                  </form>
                 </div>
-                <div class="mb-3">
-                  <input
-                    type="text"
-                    name="marca"
-                    placeholder="Marca"
-                    class="form-control bg-blue-900 text-white border-gray-700"
-                    required
-                  />
-                </div>
-                <div class="form-check">
-                  <input
-                    type="checkbox"
-                    name="disponibilidade"
-                    class="form-check-input bg-blue-900 border-gray-700"
-                    id="disponivel"
-                    checked
-                  />
-                  <label class="form-check-label" for="disponivel"
-                    >Disponível</label
-                  >
-                </div>
-                <button
-                  type="submit"
-                  class="w-full bg-primary text-white py-2 px-4 rounded-lg hover:bg-primary-600 transition duration-300"
-                >
-                  <i class="fas fa-plus mr-2"></i>Adicionar Carro
-                </button>
-              </form>
+              </div>
             </div>
           </div>
         </div>
