@@ -92,8 +92,6 @@ def edit_carro(carro_id):
     
     return render_template('edit.html', carro=carro)
 
-
-
 @app.route('/alugar_carro/<int:carro_id>', methods=['POST'])
 def alugar_carro(carro_id):
     # Coleta os dados do cliente do formulário
