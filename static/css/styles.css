@@ -31,3 +31,15 @@ body::-webkit-scrollbar-thumb:hover {
     scrollbar-color: var(--sb-thumb-color) var(--sb-track-color);
   }
 }
+
+@keyframes slideIn {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+.slide-in {
+  animation: slideIn 0.3s ease-out;
+}

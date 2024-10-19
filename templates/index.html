@@ -147,7 +147,7 @@
             >
               <div class="relative">
                 <img
-                  src="/static/img/byd.jpg"
+                  src="/static/img/byd.jpeg"
                   alt="{{ carro.MODELO }}"
                   class="w-full h-48 object-cover"
                 />
@@ -182,291 +182,291 @@
                     <span class="text-purple-200">Bagagem</span>
                   </div>
                 </div>
-
                 <div class="flex justify-between items-center">
-                  <span class="text-2xl font-bold text-purple-300"
-                    >R$ {{ carro.PRECO_DIARIA }}<span
-                      class="text-sm font-normal"
-                      >/dia</span
-                    ></span
+                  <span
+                    class="mr-2 px-2 py-1 rounded-full text-xs font-semibold {% if carro.DISPONIBILIDADE %}bg-green-500 text-white{% else %}bg-red-500 text-white{% endif %}"
                   >
-                  <div>
-                    <span
-                      class="mr-2 px-2 py-1 rounded-full text-xs font-semibold {% if carro.DISPONIBILIDADE %}bg-green-500 text-white{% else %}bg-red-500 text-white{% endif %}"
-                    >
-                      {% if carro.DISPONIBILIDADE %}Disponível{% else
-                      %}Indisponível{% endif %}
-                    </span>
-                    <button
-                      class="bg-primary hover:bg-secondary text-white font-bold py-2 px-4 rounded transition duration-300 {% if not carro.DISPONIBILIDADE %}opacity-50 cursor-not-allowed{% endif %}"
-                      {%
-                      if
-                      not
-                      carro.DISPONIBILIDADE
-                      %}disabled{%
-                      endif
-                      %}
-                      data-bs-toggle="modal"
-                      data-bs-target="#rentCarModal{{ carro.ID }}"
-                    >
-                      Alugar
-                    </button>
-                  </div>
+                    {% if carro.DISPONIBILIDADE %}Disponível{% else
+                    %}Indisponível{% endif %}
+                  </span>
+                  <button
+                    class="bg-primary hover:bg-secondary text-white font-bold py-2 px-4 rounded transition duration-300 {% if not carro.DISPONIBILIDADE %}opacity-50 cursor-not-allowed{% endif %}"
+                    {%
+                    if
+                    not
+                    carro.DISPONIBILIDADE
+                    %}disabled{%
+                    endif
+                    %}
+                  >
+                    Reservar
+                  </button>
                 </div>
+              </div>
 
-                <!-- Modal para Cadastrar Cliente -->
-                <div
-                  class="modal fade"
-                  id="rentCarModal{{ carro.ID }}"
-                  tabindex="-1"
-                  aria-labelledby="rentCarModalLabel{{ carro.ID }}"
-                  aria-hidden="true"
-                >
-                  <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content bg-surface text-gray-200">
-                      <div class="modal-header border-b border-gray-700">
-                        <h5
-                          class="modal-title text-primary"
-                          id="rentCarModalLabel{{ carro.ID }}"
-                        >
-                          Cadastrar Cliente
-                        </h5>
-                        <button
-                          type="button"
-                          class="btn-close btn-close-white"
-                          data-bs-dismiss="modal"
-                          aria-label="Close"
-                        ></button>
-                      </div>
-                      <div class="modal-body">
-                        <form
-                          action="/alugar_carro/{{ carro.ID }}"
-                          method="post"
-                          class="space-y-4"
-                        >
-                          <div class="mb-3">
-                            <input
-                              type="text"
-                              name="nome"
-                              placeholder="Nome"
-                              class="form-control bg-blue-900 text-white border-gray-700"
-                              required
-                            />
-                          </div>
-                          <div class="mb-3">
-                            <input
-                              type="text"
-                              name="numero_cnh"
-                              placeholder="Número da CNH"
-                              class="form-control bg-blue-900 text-white border-gray-700"
-                              required
-                            />
-                          </div>
-                          <div class="mb-3">
-                            <input
-                              type="text"
-                              name="numero_cartao_credito"
-                              placeholder="Número do Cartão de Crédito"
-                              class="form-control bg-blue-900 text-white border-gray-700"
-                              required
-                            />
-                          </div>
-                          <div class="mb-3">
-                            <input
-                              type="text"
-                              name="telefone"
-                              placeholder="Telefone"
-                              class="form-control bg-blue-900 text-white border-gray-700"
-                              required
-                            />
-                          </div>
-                          <div class="mb-3">
-                            <input
-                              type="email"
-                              name="email"
-                              placeholder="Email"
-                              class="form-control bg-blue-900 text-white border-gray-700"
-                              required
-                            />
-                          </div>
-                          <button
-                            type="submit"
-                            class="w-full bg-primary text-white py-2 px-4 rounded-lg hover:bg-primary-600 transition duration-300"
-                          >
-                            Alugar Carro
-                          </button>
-                        </form>
-                      </div>
+              <button
+                class="bg-primary text-white py-2 px-4 rounded-lg w-full hover:bg-primary-600 transition duration-300"
+                data-bs-toggle="modal"
+                data-bs-target="#rentCarModal"
+              >
+                Alugar
+              </button>
+
+              <!-- Modal para Cadastrar Cliente -->
+              <div
+                class="modal fade"
+                id="rentCarModal"
+                tabindex="-1"
+                aria-labelledby="rentCarModalLabel"
+                aria-hidden="true"
+                data-bs-backdrop="false"
+              >
+                <div class="modal-dialog modal-dialog-centered">
+                  <div class="modal-content bg-surface text-gray-200">
+                    <div class="modal-header border-b border-gray-700">
+                      <h5
+                        class="modal-title text-primary"
+                        id="rentCarModalLabel"
+                      >
+                        Cadastrar Cliente
+                      </h5>
+                      <button
+                        type="button"
+                        class="btn-close btn-close-white"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"
+                      ></button>
                     </div>
-                  </div>
-                </div>
-
-                <!-- Botão e Modal para excluir o carro -->
-                <button
-                  type="button"
-                  class="text-red-600 hover:text-red-800 transition"
-                  data-bs-toggle="modal"
-                  data-bs-target="#deleteCarModal{{ carro.ID }}"
-                >
-                  <i class="fas fa-trash"></i>
-                </button>
-                <div
-                  class="modal fade"
-                  id="deleteCarModal{{ carro.ID }}"
-                  tabindex="-1"
-                  aria-labelledby="deleteCarModalLabel{{ carro.ID }}"
-                  aria-hidden="true"
-                >
-                  <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content bg-surface text-gray-200">
-                      <div class="modal-header border-b border-gray-700">
-                        <h5
-                          class="modal-title text-red-600"
-                          id="deleteCarModalLabel{{ carro.ID }}"
-                        >
-                          Confirmar Exclusão
-                        </h5>
+                    <div class="modal-body">
+                      <form
+                        action="/alugar_carro/{{ carro.ID }}"
+                        method="post"
+                        class="space-y-4"
+                      >
+                        <div class="mb-3">
+                          <input
+                            type="text"
+                            name="nome"
+                            placeholder="Nome"
+                            class="form-control bg-blue-900 text-white border-gray-700"
+                            required
+                          />
+                        </div>
+                        <div class="mb-3">
+                          <input
+                            type="text"
+                            name="numero_cnh"
+                            placeholder="Número da CNH"
+                            class="form-control bg-blue-900 text-white border-gray-700"
+                            required
+                          />
+                        </div>
+                        <div class="mb-3">
+                          <input
+                            type="text"
+                            name="numero_cartao_credito"
+                            placeholder="Número do Cartão de Crédito"
+                            class="form-control bg-blue-900 text-white border-gray-700"
+                            required
+                          />
+                        </div>
+                        <div class="mb-3">
+                          <input
+                            type="text"
+                            name="telefone"
+                            placeholder="Telefone"
+                            class="form-control bg-blue-900 text-white border-gray-700"
+                            required
+                          />
+                        </div>
+                        <div class="mb-3">
+                          <input
+                            type="email"
+                            name="email"
+                            placeholder="Email"
+                            class="form-control bg-blue-900 text-white border-gray-700"
+                            required
+                          />
+                        </div>
                         <button
-                          type="button"
-                          class="btn-close btn-close-white"
-                          data-bs-dismiss="modal"
-                          aria-label="Close"
-                        ></button>
-                      </div>
-                      <div class="modal-body">
-                        <p>
-                          Você tem certeza que deseja excluir o carro
-                          <strong>{{ carro.MODELO }}</strong>?
-                        </p>
-                      </div>
-                      <div class="modal-footer">
-                        <button
-                          type="button"
-                          class="btn btn-secondary"
-                          data-bs-dismiss="modal"
+                          type="submit"
+                          class="w-full bg-primary text-white py-2 px-4 rounded-lg hover:bg-primary-600 transition duration-300"
                         >
-                          Cancelar
+                          Alugar Carro
                         </button>
-                        <form
-                          action="/delete_carro/{{ carro.ID }}"
-                          method="post"
-                        >
-                          <button type="submit" class="btn btn-danger">
-                            Excluir Carro
-                          </button>
-                        </form>
-                      </div>
+                      </form>
                     </div>
                   </div>
                 </div>
+              </div>
 
-                <!-- Botão e Modal para editar o carro -->
-                <button
-                  type="button"
-                  class="text-blue-500 hover:text-blue-700 transition"
-                  data-bs-toggle="modal"
-                  data-bs-target="#editCarModal{{ carro.ID }}"
-                >
-                  <i class="fas fa-edit"></i>
-                </button>
-                <div
-                  class="modal fade"
-                  id="editCarModal{{ carro.ID }}"
-                  tabindex="-1"
-                  aria-labelledby="editCarModalLabel{{ carro.ID }}"
-                  aria-hidden="true"
-                >
-                  <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content bg-surface text-gray-200">
-                      <div class="modal-header border-b border-gray-700">
-                        <h5
-                          class="modal-title text-primary"
-                          id="editCarModalLabel{{ carro.ID }}"
-                        >
-                          Editar Carro
-                        </h5>
-                        <button
-                          type="button"
-                          class="btn-close btn-close-white"
-                          data-bs-dismiss="modal"
-                          aria-label="Close"
-                        ></button>
-                      </div>
-                      <div class="modal-body">
-                        <form
-                          action="/edit_carro/{{ carro.ID }}"
-                          method="post"
-                          class="space-y-4"
-                        >
-                          <div class="mb-3">
-                            <label for="modelo" class="form-label text-gray-400"
-                              >Modelo</label
-                            >
-                            <input
-                              type="text"
-                              id="modelo"
-                              name="modelo"
-                              value="{{ carro.MODELO }}"
-                              placeholder="Modelo"
-                              class="form-control bg-blue-900 text-white border-gray-700"
-                              required
-                            />
-                          </div>
-                          <div class="mb-3">
-                            <label for="ano" class="form-label text-gray-400"
-                              >Ano</label
-                            >
-                            <input
-                              type="number"
-                              id="ano"
-                              name="ano"
-                              value="{{ carro.ANO }}"
-                              placeholder="Ano"
-                              class="form-control bg-blue-900 text-white border-gray-700"
-                              required
-                            />
-                          </div>
-                          <div class="mb-3">
-                            <label for="marca" class="form-label text-gray-400"
-                              >Marca</label
-                            >
-                            <input
-                              type="text"
-                              id="marca"
-                              name="marca"
-                              value="{{ carro.MARCA }}"
-                              placeholder="Marca"
-                              class="form-control bg-blue-900 text-white border-gray-700"
-                              required
-                            />
-                          </div>
-                          <div class="form-check">
-                            <input
-                              type="checkbox"
-                              id="disponivel"
-                              name="disponibilidade"
-                              class="form-check-input"
-                              {%
-                              if
-                              carro.DISPONIBILIDADE
-                              %}checked{%
-                              endif
-                              %}
-                            />
-                            <label
-                              for="disponivel"
-                              class="form-check-label text-gray-400"
-                              >Disponível</label
-                            >
-                          </div>
-                          <button
-                            type="submit"
-                            class="w-full bg-primary text-white py-2 px-4 rounded-lg hover:bg-primary-600 transition duration-300"
+              <!-- Formulário para excluir o carro -->
+              <button
+                type="button"
+                class="text-red-600 hover:text-red-800 transition"
+                data-bs-toggle="modal"
+                data-bs-target="#deleteCarModal{{ carro.ID }}"
+              >
+                <i class="fas fa-trash"></i>
+              </button>
+              <!-- Modal de Confirmação de Exclusão -->
+              <div
+                class="modal fade"
+                id="deleteCarModal{{ carro.ID }}"
+                tabindex="-1"
+                aria-labelledby="deleteCarModalLabel{{ carro.ID }}"
+                aria-hidden="true"
+                data-bs-backdrop="false"
+              >
+                <div class="modal-dialog modal-dialog-centered">
+                  <div class="modal-content bg-surface text-gray-200">
+                    <div class="modal-header border-b border-gray-700">
+                      <h5
+                        class="modal-title text-red-600"
+                        id="deleteCarModalLabel{{ carro.ID }}"
+                      >
+                        Confirmar Exclusão
+                      </h5>
+                      <button
+                        type="button"
+                        class="btn-close btn-close-white"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"
+                      ></button>
+                    </div>
+                    <div class="modal-body">
+                      <p>
+                        Você tem certeza que deseja excluir o carro
+                        <strong>{{ carro.MODELO }}</strong>?
+                      </p>
+                    </div>
+                    <div class="modal-footer">
+                      <button
+                        type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal"
+                      >
+                        Cancelar
+                      </button>
+                      <form action="/delete_carro/{{ carro.ID }}" method="post">
+                        <button type="submit" class="btn btn-danger">
+                          Excluir Carro
+                        </button>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Modal de Edição de Carro -->
+              <button
+                type="button"
+                class="text-blue-500 hover:text-blue-700 transition"
+                data-bs-toggle="modal"
+                data-bs-target="#editCarModal{{ carro.ID }}"
+                data-bs-backdrop="false"
+              >
+                <i class="fas fa-edit"></i>
+              </button>
+
+              <div
+                class="modal fade"
+                id="editCarModal{{ carro.ID }}"
+                tabindex="-1"
+                aria-labelledby="editCarModalLabel{{ carro.ID }}"
+                aria-hidden="true"
+              >
+                <div class="modal-dialog modal-dialog-centered">
+                  <div class="modal-content bg-surface text-gray-200">
+                    <div class="modal-header border-b border-gray-700">
+                      <h5
+                        class="modal-title text-primary"
+                        id="editCarModalLabel{{ carro.ID }}"
+                      >
+                        Editar Carro
+                      </h5>
+                      <button
+                        type="button"
+                        class="btn-close btn-close-white"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"
+                      ></button>
+                    </div>
+                    <div class="modal-body">
+                      <form
+                        action="/edit_carro/{{ carro.ID }}"
+                        method="post"
+                        class="space-y-4"
+                      >
+                        <div class="mb-3">
+                          <label for="modelo" class="form-label text-gray-400"
+                            >Modelo</label
                           >
-                            Salvar Alterações
-                          </button>
-                        </form>
-                      </div>
+                          <input
+                            type="text"
+                            id="modelo"
+                            name="modelo"
+                            value="{{ carro.MODELO }}"
+                            placeholder="Modelo"
+                            class="form-control bg-blue-900 text-white border-gray-700"
+                            required
+                          />
+                        </div>
+                        <div class="mb-3">
+                          <label for="ano" class="form-label text-gray-400"
+                            >Ano</label
+                          >
+                          <input
+                            type="number"
+                            id="ano"
+                            name="ano"
+                            value="{{ carro.ANO }}"
+                            placeholder="Ano"
+                            class="form-control bg-blue-900 text-white border-gray-700"
+                            required
+                          />
+                        </div>
+                        <div class="mb-3">
+                          <label for="marca" class="form-label text-gray-400"
+                            >Marca</label
+                          >
+                          <input
+                            type="text"
+                            id="marca"
+                            name="marca"
+                            value="{{ carro.MARCA }}"
+                            placeholder="Marca"
+                            class="form-control bg-blue-900 text-white border-gray-700"
+                            required
+                          />
+                        </div>
+                        <div class="form-check">
+                          <input
+                            type="checkbox"
+                            id="disponivel"
+                            name="disponibilidade"
+                            class="form-check-input bg-blue-900 border-gray-700"
+                            {%
+                            if
+                            carro.DISPONIBILIDADE
+                            %}checked{%
+                            endif
+                            %}
+                          />
+                          <label
+                            class="form-check-label text-gray-400"
+                            for="disponivel"
+                          >
+                            Disponível
+                          </label>
+                        </div>
+                        <button
+                          type="submit"
+                          class="w-full bg-primary text-white py-2 px-4 rounded-lg hover:bg-primary-600 transition duration-300"
+                        >
+                          <i class="fas fa-save mr-2"></i>Salvar Alterações
+                        </button>
+                      </form>
                     </div>
                   </div>
                 </div>
@@ -475,31 +475,31 @@
             {% endfor %}
           </div>
 
-          <!-- Botão de adicionar novo carro -->
-          <div class="mt-8 flex justify-center">
+          <div class="mt-8 text-center">
             <button
               type="button"
-              class="bg-primary text-white font-bold py-2 px-4 rounded-lg hover:bg-primary-600 transition"
+              class="bg-accent text-white py-2 px-6 rounded-lg text-lg hover:bg-accent-600 transition duration-300"
               data-bs-toggle="modal"
               data-bs-target="#addCarModal"
             >
-              Adicionar Carro
+              <i class="fas fa-plus mr-2"></i>Adicionar Carro
             </button>
           </div>
 
-          <!-- Modal para adicionar um novo carro -->
+          <!-- Modal do Bootstrap -->
           <div
             class="modal fade"
             id="addCarModal"
             tabindex="-1"
             aria-labelledby="addCarModalLabel"
             aria-hidden="true"
+            data-bs-backdrop="false"
           >
             <div class="modal-dialog modal-dialog-centered">
               <div class="modal-content bg-surface text-gray-200">
                 <div class="modal-header border-b border-gray-700">
                   <h5 class="modal-title text-primary" id="addCarModalLabel">
-                    Adicionar Novo Carro
+                    Adicionar Carro
                   </h5>
                   <button
                     type="button"
@@ -511,12 +511,8 @@
                 <div class="modal-body">
                   <form action="/add_carro" method="post" class="space-y-4">
                     <div class="mb-3">
-                      <label for="modelo" class="form-label text-gray-400"
-                        >Modelo</label
-                      >
                       <input
                         type="text"
-                        id="modelo"
                         name="modelo"
                         placeholder="Modelo"
                         class="form-control bg-blue-900 text-white border-gray-700"
@@ -524,12 +520,8 @@
                       />
                     </div>
                     <div class="mb-3">
-                      <label for="ano" class="form-label text-gray-400"
-                        >Ano</label
-                      >
                       <input
                         type="number"
-                        id="ano"
                         name="ano"
                         placeholder="Ano"
                         class="form-control bg-blue-900 text-white border-gray-700"
@@ -537,12 +529,8 @@
                       />
                     </div>
                     <div class="mb-3">
-                      <label for="marca" class="form-label text-gray-400"
-                        >Marca</label
-                      >
                       <input
                         type="text"
-                        id="marca"
                         name="marca"
                         placeholder="Marca"
                         class="form-control bg-blue-900 text-white border-gray-700"
@@ -552,13 +540,12 @@
                     <div class="form-check">
                       <input
                         type="checkbox"
-                        id="disponivel"
                         name="disponibilidade"
-                        class="form-check-input"
+                        class="form-check-input bg-blue-900 border-gray-700"
+                        id="disponivel"
+                        checked
                       />
-                      <label
-                        for="disponivel"
-                        class="form-check-label text-gray-400"
+                      <label class="form-check-label" for="disponivel"
                         >Disponível</label
                       >
                     </div>
@@ -566,7 +553,7 @@
                       type="submit"
                       class="w-full bg-primary text-white py-2 px-4 rounded-lg hover:bg-primary-600 transition duration-300"
                     >
-                      Adicionar Carro
+                      <i class="fas fa-plus mr-2"></i>Adicionar Carro
                     </button>
                   </form>
                 </div>
