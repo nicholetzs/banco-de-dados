@@ -98,73 +98,51 @@ def edit_carro(carro_id):
     
     return render_template('edit.html', carro=carro)
     
-@app.route('/alugar_carro/<int:carro_id>', methods=['GET', 'POST'])
+@app.route('/alugar_carro/<int:carro_id>', methods=['POST'])
 def alugar_carro(carro_id):
     connection = get_db_connection()
     cursor = connection.cursor(dictionary=True)
 
-    if request.method == 'POST':
-        print(f"Carro ID recebido: {carro_id}")  # Verifica se o ID está correto
-        
-        # Captura os dados do formulário enviado
-        cliente_id = request.form.get('id_cliente')  # Obtém o ID do cliente selecionado
-        data_locacao = request.form.get('data_locacao')  # Data de locação do form
-        data_retorno = request.form.get('data_retorno')  # Data de retorno do form
-        valor_diaria = request.form.get('valor_diaria')  # Valor da diária do form
+    cliente_id = request.form.get('id_cliente')  # Obtém o ID do cliente selecionado
+    data_locacao = request.form.get('data_locacao')  # Data de locação do form
+    data_retorno = request.form.get('data_retorno')  # Data de retorno do form
+    valor_diaria = request.form.get('valor_diaria')  # Valor da diária do form
 
-        try:
-            # Verifica se o carro está disponível
-            cursor.execute("SELECT DISPONIBILIDADE FROM CARROS WHERE ID = %s", (carro_id,))
-            disponibilidade = cursor.fetchone()
+    try:
+        # Verifica se o carro está disponível
+        cursor.execute("SELECT DISPONIBILIDADE FROM CARROS WHERE ID = %s", (carro_id,))
+        disponibilidade = cursor.fetchone()
 
-            if not disponibilidade:
-                return "O carro não foi encontrado."
+        if not disponibilidade:
+            return "O carro não foi encontrado."
 
-            disponibilidade = disponibilidade[0]  # Obtém o valor de DISPONIBILIDADE
+        disponibilidade = disponibilidade['DISPONIBILIDADE']  # Acessa a chave corretamente
 
-            if not disponibilidade:  # Se o carro não estiver disponível
-                return "O carro já está alugado ou indisponível."
+        if not disponibilidade:  # Se o carro não estiver disponível
+            return "O carro já está alugado ou indisponível."
 
-            # Insere a locação na tabela LOCACAO
-            cursor.execute(""" 
-                INSERT INTO LOCACAO (ID_CARRO, ID_CLIENTE, DATA_LOCACAO, DATA_RETORNO, VALOR_DIARIA) 
-                VALUES (%s, %s, %s, %s, %s) 
-            """, (carro_id, cliente_id, data_locacao, data_retorno, valor_diaria))
-            connection.commit()
+        # Insere a locação na tabela LOCACAO
+        cursor.execute(""" 
+            INSERT INTO LOCACAO (ID_CARRO, ID_CLIENTE, DATA_LOCACAO, DATA_RETORNO, VALOR_DIARIA) 
+            VALUES (%s, %s, %s, %s, %s) 
+        """, (carro_id, cliente_id, data_locacao, data_retorno, valor_diaria))
+        connection.commit()
 
-            # Atualiza a disponibilidade do carro para FALSE (Indisponível)
-            cursor.execute(""" 
-                UPDATE CARROS SET DISPONIBILIDADE = FALSE WHERE ID = %s 
-            """, (carro_id,))
-            connection.commit()
+        # Atualiza a disponibilidade do carro para FALSE (Indisponível)
+        cursor.execute(""" 
+            UPDATE CARROS SET DISPONIBILIDADE = FALSE WHERE ID = %s 
+        """, (carro_id,))
+        connection.commit()
 
-            return redirect(url_for('list_carros'))  # Redireciona para a lista de carros
+        return redirect(url_for('list_carros'))  # Redireciona para a lista de carros
 
-        except Exception as e:
-            connection.rollback()  # Desfaz qualquer alteração em caso de erro
-            return f"Ocorreu um erro: {str(e)}"
-        
-        finally:
-            cursor.close()
-            connection.close()
+    except Exception as e:
+        connection.rollback()  # Desfaz qualquer alteração em caso de erro
+        return f"Ocorreu um erro: {str(e)}"
     
-    elif request.method == 'GET':
-        print(f"Requisição GET para o carro ID: {carro_id}")
-
-        # Obter os dados do carro
-        cursor.execute('SELECT * FROM CARROS WHERE ID = %s', (carro_id,))
-        carro = cursor.fetchone()
-
-        # Obtenha os clientes
-        cursor.execute('SELECT * FROM CLIENTES')
-        clientes = cursor.fetchall()
-
+    finally:
         cursor.close()
         connection.close()
-
-        # Renderiza o modal com os dados do carro e dos clientes
-        return render_template('modal_rent.html', carro=carro, clientes=clientes)
-
 
 if __name__ == '__main__':
     app.run(debug=True)
