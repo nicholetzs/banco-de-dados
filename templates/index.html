@@ -202,7 +202,7 @@
                     data-bs-toggle="modal"
                     data-bs-target="#rentCarModal"
                     data-carro-id="{{ carro.ID }}"
-                    onclick="/rent_car/{{ carro.ID }}"
+                    onclick="window.location.href='{{ url_for('alugar_carro', carro_id=carro.ID) }}'"
                   >
                     Reservar
                   </button>

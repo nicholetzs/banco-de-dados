@@ -98,9 +98,11 @@ def edit_carro(carro_id):
     
     return render_template('edit.html', carro=carro)
     
-@app.route('/alugar_carro/<string:carro_id>', methods=['GET', 'POST'])
+@app.route('/alugar_carro/<int:carro_id>', methods=['GET', 'POST'])
 def alugar_carro(carro_id):
-    # Verifica o método da requisição
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
+
     if request.method == 'POST':
         print(f"Carro ID recebido: {carro_id}")  # Verifica se o ID está correto
         
@@ -110,14 +112,15 @@ def alugar_carro(carro_id):
         data_retorno = request.form.get('data_retorno')  # Data de retorno do form
         valor_diaria = request.form.get('valor_diaria')  # Valor da diária do form
 
-        # Conecta ao banco de dados
-        connection = get_db_connection()
-        cursor = connection.cursor()
-
         try:
             # Verifica se o carro está disponível
             cursor.execute("SELECT DISPONIBILIDADE FROM CARROS WHERE ID = %s", (carro_id,))
-            disponibilidade = cursor.fetchone()[0]
+            disponibilidade = cursor.fetchone()
+
+            if not disponibilidade:
+                return "O carro não foi encontrado."
+
+            disponibilidade = disponibilidade[0]  # Obtém o valor de DISPONIBILIDADE
 
             if not disponibilidade:  # Se o carro não estiver disponível
                 return "O carro já está alugado ou indisponível."
@@ -147,27 +150,21 @@ def alugar_carro(carro_id):
     
     elif request.method == 'GET':
         print(f"Requisição GET para o carro ID: {carro_id}")
-        # Aqui você pode retornar um template ou outra lógica se precisar tratar a requisição GET
-        return "Acesso à página de aluguel de carro. Preencha o formulário abaixo."  # Exemplo de resposta para GET
-    
-@app.route('/rent_car/<int:carro_id>', methods=['GET'])
-def rent_car(carro_id):
-    connection = get_db_connection()
-    cursor = connection.cursor(dictionary=True)
 
-    #Obter os dados do carro
-    cursor.execute('SELECT * FROM CARROS WHERE ID = %s', (carro_id,))
-    carros = cursor.fetchall()
+        # Obter os dados do carro
+        cursor.execute('SELECT * FROM CARROS WHERE ID = %s', (carro_id,))
+        carro = cursor.fetchone()
 
-    # Obtenha os clientes
-    cursor.execute('SELECT * FROM CLIENTES')
-    clientes = cursor.fetchall()
+        # Obtenha os clientes
+        cursor.execute('SELECT * FROM CLIENTES')
+        clientes = cursor.fetchall()
 
-    cursor.close()
-    connection.close()
+        cursor.close()
+        connection.close()
 
-    # Passe o `carro_id` para o template
-    return render_template('index.html',carros=carros, carro_id=carro_id, clientes=clientes)
+        # Renderiza o modal com os dados do carro e dos clientes
+        return render_template('modal_rent.html', carro=carro, clientes=clientes)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
