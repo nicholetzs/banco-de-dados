@@ -30,20 +30,19 @@
           },
         },
       };
+      var rentCarModal = document.getElementById("rentCarModal");
+      rentCarModal.addEventListener("show.bs.modal", function (event) {
+        var button = event.relatedTarget; // Botão que abriu o modal
+        var carroId = parseInt(button.getAttribute("data-carro-id"), 10); // Pega o carro_id do botão e converte para inteiro
+
+        var carroIdInput = rentCarModal.querySelector("#carroIdInput");
+        carroIdInput.value = carroId; // Atualiza o valor do campo oculto
+
+        var form = rentCarModal.querySelector("#rentCarForm");
+        form.action = "{{ url_for('alugar_carro', carro_id='') }}" + carroId; // Atualiza a ação do formulário
+        console.log("Carro ID:", carroId); // Verifique se o carroId é o correto
+      });
     </script>
-    <style>
-      @keyframes slideIn {
-        from {
-          transform: translateX(-100%);
-        }
-        to {
-          transform: translateX(0);
-        }
-      }
-      .slide-in {
-        animation: slideIn 0.3s ease-out;
-      }
-    </style>
   </head>
   <body class="min-h-screen bg-background text-gray-200 font-sans">
     <div class="flex h-screen">
@@ -142,6 +141,7 @@
 
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {% for carro in carros %}
+            <div class="carro-card" onclick="alugarCarro({{ carro.ID }})"></div>
             <div
               class="bg-surface rounded-lg overflow-hidden shadow-lg hover:shadow-2xl transition duration-300 transform hover:-translate-y-1"
             >
@@ -151,6 +151,7 @@
                   alt="{{ carro.MODELO }}"
                   class="w-full h-48 object-cover"
                 />
+
                 <div
                   class="absolute top-0 right-0 bg-primary text-white px-3 py-1 rounded-bl-lg font-semibold"
                 >
@@ -159,7 +160,7 @@
               </div>
               <div class="p-6">
                 <h2 class="text-2xl font-semibold mb-2 text-purple-300">
-                  {{ carro.MODELO }}
+                  {{ carro.MODELO }} ID: {{ carro.ID }}
                 </h2>
                 <p class="text-purple-200 mb-4">{{ carro.MARCA }}</p>
                 <div class="flex justify-between items-center mb-4">
@@ -201,6 +202,7 @@
                     data-bs-toggle="modal"
                     data-bs-target="#rentCarModal"
                     data-carro-id="{{ carro.ID }}"
+                    onclick="/rent_car/{{ carro.ID }}"
                   >
                     Reservar
                   </button>
@@ -214,7 +216,6 @@
                 tabindex="-1"
                 aria-labelledby="rentCarModalLabel"
                 aria-hidden="true"
-                data-bs-backdrop="false"
               >
                 <div class="modal-dialog modal-dialog-centered">
                   <div class="modal-content bg-surface text-gray-200">
@@ -234,11 +235,17 @@
                     </div>
                     <div class="modal-body">
                       <form
-                        action="{{ url_for('alugar_carro', carro_id=carro.ID) }}"
+                        id="rentCarForm"
+                        action="/alugar_carro/{{ carro.ID }}"
                         method="post"
                         class="space-y-4"
                       >
-                        <!-- Cliente -->
+                        <input
+                          type="hidden"
+                          id="carroIdInput"
+                          name="carro_id"
+                        />
+
                         <div class="mb-3">
                           <label for="cliente" class="form-label text-gray-400"
                             >Cliente</label
@@ -485,13 +492,6 @@
                         >
                           <i class="fas fa-save mr-2"></i>Salvar Alterações
                         </button>
-                        <a
-                          href="{{ url_for('rent_car', carro_id=carro.ID) }}"
-                          data-bs-toggle="modal"
-                          data-bs-target="#rentCarModal"
-                        >
-                          Reservar
-                        </a>
                       </form>
                     </div>
                   </div>
