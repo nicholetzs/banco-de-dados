@@ -18,14 +18,20 @@ def get_db_connection():
 # Rota para listar carros
 @app.route('/index')
 def list_carros():
-    connection = get_db_connection()  # Obtém a conexão
-    cursor = connection.cursor(dictionary=True)  # Cria um cursor
-    cursor.execute('SELECT * FROM CARROS')  # Executa a consulta SQL
-    carros = cursor.fetchall()  # Recupera todos os registros
-    cursor.close()  # Fecha o cursor
-    connection.close()  # Fecha a conexão
-    
-    return render_template('index.html', carros=carros)  # Renderiza o template
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
+    cursor.execute('SELECT * FROM CARROS')
+    carros = cursor.fetchall()
+
+    # Adicione essa parte para obter a lista de clientes
+    cursor.execute('SELECT * FROM CLIENTES')
+    clientes = cursor.fetchall()
+
+    cursor.close()
+    connection.close()
+
+    return render_template('index.html', carros=carros, clientes=clientes)  # Passa os clientes
+
 
 # Rota para adicionar um carro
 @app.route('/add_carro', methods=['POST'])
@@ -94,42 +100,63 @@ def edit_carro(carro_id):
 
 @app.route('/alugar_carro/<int:carro_id>', methods=['POST'])
 def alugar_carro(carro_id):
-    # Coleta os dados do cliente do formulário
-    nome = request.form['nome']
-    numero_cnh = request.form['numero_cnh']
-    numero_cartao_credito = request.form['numero_cartao_credito']
-    telefone = request.form['telefone']
-    email = request.form['email']
+    # Captura os dados do formulário enviado
+    cliente_id = request.form.get('id_cliente')  # Obtém o ID do cliente selecionado
+    data_locacao = request.form.get('data_locacao')  # Data de locação do form
+    data_retorno = request.form.get('data_retorno')  # Data de retorno do form
+    valor_diaria = request.form.get('valor_diaria')  # Valor da diária do form
 
-    # Conexão ao banco de dados
+
+    # Conecta ao banco de dados
     connection = get_db_connection()
     cursor = connection.cursor()
 
-    # Inserir cliente na tabela CLIENTES
-    insert_cliente_query = """
-    INSERT INTO CLIENTES (NOME, NUMERO_CNH, NUMERO_CARTAO_CREDITO, TELEFONE, EMAIL)
-    VALUES (%s, %s, %s, %s, %s)
-    """
-    cursor.execute(insert_cliente_query, (nome, numero_cnh, numero_cartao_credito, telefone, email))
-    connection.commit()
+    try:
+        # Verifica se o carro está disponível
+        cursor.execute("SELECT DISPONIBILIDADE FROM CARROS WHERE ID = %s", (carro_id,))
+        disponibilidade = cursor.fetchone()[0]
 
-    # Obter o ID do cliente recém-inserido
-    cliente_id = cursor.lastrowid
+        if disponibilidade == 1:  # Se o carro não estiver disponível
+            return "O carro já está alugado ou indisponível."
 
-    # Atualizar a disponibilidade do carro na tabela CARROS
-    update_carro_query = """
-    UPDATE CARROS
-    SET DISPONIBILIDADE = %s
-    WHERE ID = %s
-    """
-    cursor.execute(update_carro_query, (False, carro_id))
-    connection.commit()
+        # Insere a locação na tabela LOCACAO
+        cursor.execute("""
+            INSERT INTO LOCACAO (ID_CARRO, ID_CLIENTE, DATA_LOCACAO, DATA_RETORNO, VALOR_DIARIA)
+            VALUES (%s, %s, %s, %s, %s)
+        """, (carro_id, cliente_id, data_locacao, data_retorno, valor_diaria))
+        connection.commit()
 
-    # Fechar a conexão
+        # Atualiza a disponibilidade do carro para FALSE (Indisponível)
+        cursor.execute("""
+            UPDATE CARROS SET DISPONIBILIDADE = FALSE WHERE ID = %s
+        """, (carro_id,))
+        connection.commit()
+
+        return "Carro alugado com sucesso!"
+    
+    except Exception as e:
+        connection.rollback()  # Desfaz qualquer alteração em caso de erro
+        return f"Ocorreu um erro: {str(e)}"
+    
+    finally:
+        cursor.close()
+        connection.close()
+
+
+@app.route('/rent_car/<int:carro_id>', methods=['GET'])
+def rent_car(carro_id):
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
+
+    # Obtém todos os clientes
+    cursor.execute('SELECT * FROM CLIENTES')
+    clientes = cursor.fetchall()
+
     cursor.close()
     connection.close()
 
-    return redirect(url_for('list_carros'))  # Redirecionar para a lista de carros
+    return render_template('modal_rent.html', carro_id=carro_id, clientes=clientes)
+
 
 if __name__ == '__main__':
     app.run(debug=True)

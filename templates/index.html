@@ -114,7 +114,7 @@
               <p class="text-sm font-medium text-purple-300">
                 Nichole Nicolini
               </p>
-              <p class="text-xs text-purple-400">Cliente Premium</p>
+              <p class="text-xs text-purple-400">Administrador</p>
             </div>
           </div>
           <div class="flex justify-between">
@@ -133,7 +133,7 @@
       </nav>
 
       <!-- Main Content Area -->
-      <div class="flex-1 p-10">
+      <div class="flex-1 p-10 bg-blue-100">
         <!-- My main content goes here -->
         <div class="container mx-auto px-4 py-8">
           <h1 class="text-4xl font-bold mb-8 text-center text-primary">
@@ -198,16 +198,16 @@
                     %}disabled{%
                     endif
                     %}
-                    class="bg-primary text-white py-2 px-4 rounded-lg w-full hover:bg-primary-600 transition duration-300"
                     data-bs-toggle="modal"
                     data-bs-target="#rentCarModal"
+                    data-carro-id="{{ carro.ID }}"
                   >
                     Reservar
                   </button>
                 </div>
               </div>
 
-              <!-- Modal para Cadastrar Cliente -->
+              <!-- Modal para Alugar Carro -->
               <div
                 class="modal fade"
                 id="rentCarModal"
@@ -223,7 +223,7 @@
                         class="modal-title text-primary"
                         id="rentCarModalLabel"
                       >
-                        Cadastrar Cliente
+                        Alugar Carro
                       </h5>
                       <button
                         type="button"
@@ -234,60 +234,83 @@
                     </div>
                     <div class="modal-body">
                       <form
-                        action="/alugar_carro/{{ carro.ID }}"
+                        action="{{ url_for('alugar_carro', carro_id=carro.ID) }}"
                         method="post"
                         class="space-y-4"
                       >
+                        <!-- Cliente -->
                         <div class="mb-3">
+                          <label for="cliente" class="form-label text-gray-400"
+                            >Cliente</label
+                          >
+                          <select
+                            id="cliente"
+                            name="id_cliente"
+                            class="form-control bg-blue-900 text-white border-gray-700"
+                            required
+                          >
+                            {% for cliente in clientes %}
+                            <option value="{{ cliente.ID }}">
+                              {{ cliente.NOME }}
+                            </option>
+                            {% endfor %}
+                          </select>
+                        </div>
+
+                        <!-- Data de Locação -->
+                        <div class="mb-3">
+                          <label
+                            for="data_locacao"
+                            class="form-label text-gray-400"
+                            >Data de Locação</label
+                          >
+                          <input
+                            type="date"
+                            id="data_locacao"
+                            name="data_locacao"
+                            class="form-control bg-blue-900 text-white border-gray-700"
+                            required
+                          />
+                        </div>
+
+                        <!-- Data de Retorno -->
+                        <div class="mb-3">
+                          <label
+                            for="data_retorno"
+                            class="form-label text-gray-400"
+                            >Data de Retorno</label
+                          >
+                          <input
+                            type="date"
+                            id="data_retorno"
+                            name="data_retorno"
+                            class="form-control bg-blue-900 text-white border-gray-700"
+                            required
+                          />
+                        </div>
+
+                        <!-- Valor da Diária -->
+                        <div class="mb-3">
+                          <label
+                            for="valor_diaria"
+                            class="form-label text-gray-400"
+                            >Valor da Diária</label
+                          >
                           <input
                             type="text"
-                            name="nome"
-                            placeholder="Nome"
+                            id="valor_diaria"
+                            name="valor_diaria"
                             class="form-control bg-blue-900 text-white border-gray-700"
                             required
                           />
                         </div>
-                        <div class="mb-3">
-                          <input
-                            type="text"
-                            name="numero_cnh"
-                            placeholder="Número da CNH"
-                            class="form-control bg-blue-900 text-white border-gray-700"
-                            required
-                          />
-                        </div>
-                        <div class="mb-3">
-                          <input
-                            type="text"
-                            name="numero_cartao_credito"
-                            placeholder="Número do Cartão de Crédito"
-                            class="form-control bg-blue-900 text-white border-gray-700"
-                            required
-                          />
-                        </div>
-                        <div class="mb-3">
-                          <input
-                            type="text"
-                            name="telefone"
-                            placeholder="Telefone"
-                            class="form-control bg-blue-900 text-white border-gray-700"
-                            required
-                          />
-                        </div>
-                        <div class="mb-3">
-                          <input
-                            type="email"
-                            name="email"
-                            placeholder="Email"
-                            class="form-control bg-blue-900 text-white border-gray-700"
-                            required
-                          />
-                        </div>
+
+                        <!-- Botão de Alugar -->
                         <button
                           type="submit"
                           class="w-full bg-primary text-white py-2 px-4 rounded-lg hover:bg-primary-600 transition duration-300"
                         >
-                          Alugar Carro
+                          Alugar
                         </button>
                       </form>
                     </div>
@@ -370,6 +393,7 @@
                 tabindex="-1"
                 aria-labelledby="editCarModalLabel{{ carro.ID }}"
                 aria-hidden="true"
+                data-bs-backdrop="false"
               >
                 <div class="modal-dialog modal-dialog-centered">
                   <div class="modal-content bg-surface text-gray-200">
@@ -461,6 +485,13 @@
                         >
                           <i class="fas fa-save mr-2"></i>Salvar Alterações
                         </button>
+                        <a
+                          href="{{ url_for('rent_car', carro_id=carro.ID) }}"
+                          data-bs-toggle="modal"
+                          data-bs-target="#rentCarModal"
+                        >
+                          Reservar
+                        </a>
                       </form>
                     </div>
                   </div>
