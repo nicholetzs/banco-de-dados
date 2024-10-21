@@ -26,6 +26,8 @@ Navegue até a pasta do projeto:
 cd /caminho/para/o/projeto
 Ative o ambiente virtual no Linux:
 source venv/bin/activate
+Rode o app.py:
+python app.py
 
 5. Configurando o Banco de Dados
    Certifique-se de que o MySQL esteja em execução. Acesse o MySQL e crie o banco de dados:
