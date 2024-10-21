@@ -23,14 +23,8 @@ Antes de começar, certifique-se de ter os seguintes pré-requisitos instalados:
 2. No menu, clique em **File** > **Open Folder...**.
 3. Selecione a pasta onde você extraiu o projeto.
 
-### 3. Ativando o Ambiente Virtual
+### 3. Criando e Ativando o Ambiente Virtual
 
 1. No terminal do VS Code (você pode abrir o terminal pressionando `` Ctrl + ` ``), navegue até a pasta do projeto (se ainda não estiver lá) usando o comando `cd`:
-
-
-## No Linux
-1. Abra o terminal.
-
-2. Navegue até o diretório onde está o arquivo app.py: cd /caminho/para/o/projeto
-3. Ative o ambiente virtual: source venv/bin/activate
-4. Execute o arquivo Python: python app.py
+   ```bash
+   cd /caminho/para/o/projeto
