@@ -23,12 +23,8 @@ Passo a Passo
 
 Navegue até a pasta do projeto:
 
-bash
-Copiar código
 cd /caminho/para/o/projeto
-Ative o ambiente virtual:
-
-No Linux:
+Ative o ambiente virtual no Linux:
 source venv/bin/activate
 
 5. Configurando o Banco de Dados
