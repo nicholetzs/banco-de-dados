@@ -1,7 +1,145 @@
+
 from flask import Flask, render_template, request, redirect, url_for
 import mysql.connector
 
-app = Flask(__name__)
+class Database:
+    def __init__(self, config):
+        self.config = config
+
+    def get_connection(self):
+        return mysql.connector.connect(**self.config)
+
+
+class CarroApp:
+    def __init__(self, db):
+        self.db = db
+        self.app = Flask(__name__)
+        self.setup_routes()
+
+    def setup_routes(self):
+        @self.app.route('/index')
+        def list_carros():
+            connection = self.db.get_connection()
+            cursor = connection.cursor(dictionary=True)
+            cursor.execute('SELECT * FROM CARROS')
+            carros = cursor.fetchall()
+
+            # Adicionando clientes
+            cursor.execute('SELECT * FROM CLIENTES')
+            clientes = cursor.fetchall()
+
+            cursor.close()
+            connection.close()
+
+            # Passe a lista de carros para o template
+            return render_template('index.html', carros=carros, clientes=clientes) 
+
+        @self.app.route('/add_carro', methods=['POST'])
+        def add_carro():
+            modelo = request.form['modelo']
+            ano = request.form['ano']
+            marca = request.form['marca']
+            disponibilidade = request.form.get('disponibilidade', 'off') == 'on'
+
+            connection = self.db.get_connection()
+            cursor = connection.cursor()
+
+            cursor.execute(
+                'INSERT INTO CARROS (MODELO, ANO, MARCA, DISPONIBILIDADE) VALUES (%s, %s, %s, %s)',
+                (modelo, ano, marca, disponibilidade)
+            )
+            connection.commit()
+            cursor.close()
+            connection.close()
+
+            return redirect(url_for('list_carros'))
+
+        @self.app.route('/delete_carro/<int:carro_id>', methods=['POST'])
+        def delete_carro(carro_id):
+            connection = self.db.get_connection()
+            cursor = connection.cursor()
+            cursor.execute('DELETE FROM CARROS WHERE ID = %s', (carro_id,))
+            connection.commit()
+            cursor.close()
+            connection.close()
+            return redirect(url_for('list_carros'))
+
+        @self.app.route('/edit_carro/<int:carro_id>', methods=['GET', 'POST'])
+        def edit_carro(carro_id):
+            if request.method == 'POST':
+                modelo = request.form['modelo']
+                ano = request.form['ano']
+                marca = request.form['marca']
+                disponibilidade = request.form.get('disponibilidade', 'off') == 'on'
+
+                connection = self.db.get_connection()
+                cursor = connection.cursor()
+
+                cursor.execute(
+                    'UPDATE CARROS SET MODELO = %s, ANO = %s, MARCA = %s, DISPONIBILIDADE = %s WHERE ID = %s',
+                    (modelo, ano, marca, disponibilidade, carro_id)
+                )
+                connection.commit()
+                cursor.close()
+                connection.close()
+
+                return redirect(url_for('list_carros'))
+
+            connection = self.db.get_connection()
+            cursor = connection.cursor(dictionary=True)
+            cursor.execute('SELECT * FROM CARROS WHERE ID = %s', (carro_id,))
+            carro = cursor.fetchone()
+            cursor.close()
+            connection.close()
+
+            return render_template('edit.html', carro=carro)
+
+        @self.app.route('/alugar_carro/<int:carro_id>', methods=['POST'])
+        def alugar_carro(carro_id):
+            connection = self.db.get_connection()
+            cursor = connection.cursor(dictionary=True)
+
+            cliente_id = request.form.get('id_cliente')
+            data_locacao = request.form.get('data_locacao')
+            data_retorno = request.form.get('data_retorno')
+            valor_diaria = request.form.get('valor_diaria')
+
+            try:
+                cursor.execute("SELECT DISPONIBILIDADE FROM CARROS WHERE ID = %s", (carro_id,))
+                disponibilidade = cursor.fetchone()
+
+                if not disponibilidade:
+                    return "O carro não foi encontrado."
+
+                disponibilidade = disponibilidade['DISPONIBILIDADE']
+
+                if not disponibilidade:
+                    return "O carro já está alugado ou indisponível."
+
+                cursor.execute(""" 
+                    INSERT INTO LOCACAO (ID_CARRO, ID_CLIENTE, DATA_LOCACAO, DATA_RETORNO, VALOR_DIARIA) 
+                    VALUES (%s, %s, %s, %s, %s) 
+                """, (carro_id, cliente_id, data_locacao, data_retorno, valor_diaria))
+                connection.commit()
+
+                cursor.execute(""" 
+                    UPDATE CARROS SET DISPONIBILIDADE = FALSE WHERE ID = %s 
+                """, (carro_id,))
+                connection.commit()
+
+                return redirect(url_for('list_carros'))
+
+            except Exception as e:
+                connection.rollback()
+                return f"Ocorreu um erro: {str(e)}"
+
+            finally:
+                cursor.close()
+                connection.close()
+
+    def run(self, debug=True):
+        self.app.run(debug=debug)
+
 
 # Configurações do banco de dados
 db_config = {
@@ -11,138 +149,8 @@ db_config = {
     'database': 'DBAUTOCAR',
 }
 
-# Função para obter conexão
-def get_db_connection():
-    return mysql.connector.connect(**db_config)
-
-# Rota para listar carros
-@app.route('/index')
-def list_carros():
-    connection = get_db_connection()
-    cursor = connection.cursor(dictionary=True)
-    cursor.execute('SELECT * FROM CARROS')
-    carros = cursor.fetchall()
-
-    # Adicionando clientes
-    cursor.execute('SELECT * FROM CLIENTES')
-    clientes = cursor.fetchall()
-
-    cursor.close()
-    connection.close()
-
-    # Passe a lista de carros para o template
-    return render_template('index.html', carros=carros, clientes=clientes) 
-
-# Rota para adicionar um carro
-@app.route('/add_carro', methods=['POST'])
-def add_carro():
-    # Agora o ID será gerado automaticamente
-    modelo = request.form['modelo']
-    ano = request.form['ano']
-    marca = request.form['marca']
-    disponibilidade = request.form.get('disponibilidade', 'off') == 'on'  # Checa se o checkbox está marcado
-
-    connection = get_db_connection()
-    cursor = connection.cursor()
-
-    # Inserção sem o ID, já que será gerado automaticamente
-    cursor.execute(
-        'INSERT INTO CARROS (MODELO, ANO, MARCA, DISPONIBILIDADE) VALUES (%s, %s, %s, %s)',
-        (modelo, ano, marca, disponibilidade)
-    )
-    connection.commit()  # Confirma a transação
-    cursor.close()  # Fecha o cursor
-    connection.close()  # Fecha a conexão
-
-    return redirect(url_for('list_carros'))  # Redireciona para a lista de carros
-
-@app.route('/delete_carro/<int:carro_id>', methods=['POST'])
-def delete_carro(carro_id):
-    connection = get_db_connection()
-    cursor = connection.cursor()
-    cursor.execute('DELETE FROM CARROS WHERE ID = %s', (carro_id,))
-    connection.commit()
-    cursor.close()
-    connection.close()
-    return redirect(url_for('list_carros'))
-
-@app.route('/edit_carro/<int:carro_id>', methods=['GET', 'POST'])
-def edit_carro(carro_id):
-    if request.method == 'POST':
-        modelo = request.form['modelo']
-        ano = request.form['ano']
-        marca = request.form['marca']
-        disponibilidade = request.form.get('disponibilidade', 'off') == 'on'  # Obtém o status do checkbox
-
-        connection = get_db_connection()
-        cursor = connection.cursor()
-
-        # Atualiza os dados do carro no banco de dados
-        cursor.execute(
-            'UPDATE CARROS SET MODELO = %s, ANO = %s, MARCA = %s, DISPONIBILIDADE = %s WHERE ID = %s',
-            (modelo, ano, marca, disponibilidade, carro_id)
-        )
-        connection.commit()  # Confirma a transação
-        cursor.close()
-        connection.close()
-
-        return redirect(url_for('list_carros'))  # Redireciona para a lista de carros
-
-    # Método GET: busca os detalhes do carro
-    connection = get_db_connection()
-    cursor = connection.cursor(dictionary=True)
-    cursor.execute('SELECT * FROM CARROS WHERE ID = %s', (carro_id,))
-    carro = cursor.fetchone()
-    cursor.close()
-    connection.close()
-    
-    return render_template('edit.html', carro=carro)
-    
-@app.route('/alugar_carro/<int:carro_id>', methods=['POST'])
-def alugar_carro(carro_id):
-    connection = get_db_connection()
-    cursor = connection.cursor(dictionary=True)
-
-    cliente_id = request.form.get('id_cliente')  # Obtém o ID do cliente selecionado
-    data_locacao = request.form.get('data_locacao')  # Data de locação do form
-    data_retorno = request.form.get('data_retorno')  # Data de retorno do form
-    valor_diaria = request.form.get('valor_diaria')  # Valor da diária do form
-
-    try:
-        # Verifica se o carro está disponível
-        cursor.execute("SELECT DISPONIBILIDADE FROM CARROS WHERE ID = %s", (carro_id,))
-        disponibilidade = cursor.fetchone()
-
-        if not disponibilidade:
-            return "O carro não foi encontrado."
-
-        disponibilidade = disponibilidade['DISPONIBILIDADE']  # Acessa a chave corretamente
-
-        if not disponibilidade:  # Se o carro não estiver disponível
-            return "O carro já está alugado ou indisponível."
-
-        # Insere a locação na tabela LOCACAO
-        cursor.execute(""" 
-            INSERT INTO LOCACAO (ID_CARRO, ID_CLIENTE, DATA_LOCACAO, DATA_RETORNO, VALOR_DIARIA) 
-            VALUES (%s, %s, %s, %s, %s) 
-        """, (carro_id, cliente_id, data_locacao, data_retorno, valor_diaria))
-        connection.commit()
-
-        # Atualiza a disponibilidade do carro para FALSE (Indisponível)
-        cursor.execute(""" 
-            UPDATE CARROS SET DISPONIBILIDADE = FALSE WHERE ID = %s 
-        """, (carro_id,))
-        connection.commit()
-
-        return redirect(url_for('list_carros'))  # Redireciona para a lista de carros
-
-    except Exception as e:
-        connection.rollback()  # Desfaz qualquer alteração em caso de erro
-        return f"Ocorreu um erro: {str(e)}"
-    
-    finally:
-        cursor.close()
-        connection.close()
+db = Database(db_config)
+carro_app = CarroApp(db)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    carro_app.run()
