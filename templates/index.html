@@ -387,7 +387,16 @@
                       >
                         <button
                           type="submit"
-                          class="px-6 py-2.5 bg-red-600 text-white font-medium text-xs leading-tight uppercase rounded-full shadow-md hover:bg-red-700 hover:shadow-lg focus:bg-red-700 focus:shadow-lg focus:outline-none focus:ring-2 focus:ring-red-500 active:bg-red-800 active:shadow-lg transition duration-150 ease-in-out"
+                          class="px-6 py-2.5 bg-red-600 text-white font-medium text-xs leading-tight uppercase rounded-full shadow-md hover:bg-red-700 hover:shadow-lg focus:bg-red-700 focus:shadow-lg focus:outline-none focus:ring-2 focus:ring-red-500 active:bg-red-800 active:shadow-lg transition duration-150 ease-in-out {% if not carro.DISPONIBILIDADE %} opacity-50 cursor-not-allowed {% endif %}"
+                          {%
+                          if
+                          not
+                          carro.DISPONIBILIDADE
+                          %}
+                          disabled
+                          {%
+                          endif
+                          %}
                         >
                           Excluir Carro
                         </button>
