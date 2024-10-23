@@ -137,6 +137,40 @@ class CarroApp:
                 cursor.close()
                 connection.close()
 
+        @self.app.route('/devolver_carro/<int:carro_id>', methods=['POST'])
+        def devolver_carro(carro_id):
+            disponibilidade = request.form.get('disponibilidade') == 'on'
+
+            connection = self.db.get_connection()
+            cursor = connection.cursor()
+
+            try:
+                # Se o carro for marcado como disponível, remover o cliente associado e devolver o carro
+                if disponibilidade:
+                    cursor.execute("""
+                        UPDATE CARROS 
+                        SET DISPONIBILIDADE = TRUE, CLIENTE_ID = NULL
+                        WHERE ID = %s
+                    """, (carro_id,))
+                    connection.commit()
+                else:
+                    cursor.execute("""
+                        UPDATE CARROS 
+                        SET DISPONIBILIDADE = FALSE
+                        WHERE ID = %s
+                    """, (carro_id,))
+                    connection.commit()
+
+                return redirect(url_for('list_carros'))
+
+            except Exception as e:
+                connection.rollback()
+                return f"Ocorreu um erro ao devolver o carro: {str(e)}"
+
+            finally:
+                cursor.close()
+                connection.close()
+
     def run(self, debug=True):
         self.app.run(debug=debug)
 

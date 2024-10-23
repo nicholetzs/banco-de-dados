@@ -175,136 +175,138 @@
               </div>
 
               <!-- Modal de Confirmação de Aluguel -->
-              <div
-                class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto"
-                id="rentCarModal{{ carro.ID }}"
-                tabindex="-1"
-                aria-labelledby="rentCarModalLabel{{ carro.ID }}"
-                aria-hidden="true"
-                data-bs-backdrop="false"
-              >
+              <div className="">
                 <div
-                  class="modal-dialog modal-dialog-centered relative w-auto pointer-events-none"
+                  class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto"
+                  id="rentCarModal{{ carro.ID }}"
+                  tabindex="-1"
+                  aria-labelledby="rentCarModalLabel{{ carro.ID }}"
+                  aria-hidden="true"
+                  data-bs-backdrop="false"
                 >
                   <div
-                    class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white rounded-lg outline-none text-current"
+                    class="modal-dialog modal-lg modal-dialog-centered relative w-auto pointer-events-none"
                   >
                     <div
-                      class="modal-header flex flex-shrink-0 items-center justify-between p-4 border-b border-gray-200 rounded-t-md"
+                      class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white rounded-lg outline-none text-current min-h-[60vh]"
                     >
-                      <h5
-                        class="text-xl font-semibold leading-normal text-gray-800"
-                        id="rentCarModalLabel{{ carro.ID }}"
+                      <div
+                        class="modal-header flex flex-shrink-0 items-center justify-between p-4 border-b border-gray-200 rounded-t-md"
                       >
-                        Confirmar Aluguel
-                      </h5>
-                      <button
-                        type="button"
-                        class="btn-close box-content w-4 h-4 p-1 text-black border-none rounded-none opacity-50 focus:shadow-none focus:outline-none focus:opacity-100 hover:text-black hover:opacity-75 hover:no-underline"
-                        data-bs-dismiss="modal"
-                        aria-label="Close"
-                      ></button>
-                    </div>
-                    <div class="modal-body relative p-4">
-                      <form
-                        action="/alugar_carro/{{ carro.ID }}"
-                        method="post"
-                        class="space-y-4"
-                      >
-                        <input
-                          type="hidden"
-                          id="carroIdInput"
-                          name="carro_id"
-                          value="{{ carro.ID }}"
-                        />
-
-                        <!-- Cliente -->
-                        <div>
-                          <label
-                            for="cliente"
-                            class="block text-sm font-medium text-gray-700"
-                            >Cliente</label
-                          >
-                          <select
-                            id="cliente"
-                            name="id_cliente"
-                            class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
-                            required
-                          >
-                            {% for cliente in clientes %}
-                            <option value="{{ cliente.ID }}">
-                              {{ cliente.NOME }}
-                            </option>
-                            {% endfor %}
-                          </select>
-                        </div>
-
-                        <!-- Data de Locação -->
-                        <div>
-                          <label
-                            for="data_locacao"
-                            class="block text-sm font-medium text-gray-700"
-                            >Data de Locação</label
-                          >
+                        <h5
+                          class="text-md font-semibold leading-normal text-gray-800"
+                          id="rentCarModalLabel{{ carro.ID }}"
+                        >
+                          Confirmar Aluguel
+                        </h5>
+                        <button
+                          type="button"
+                          class="btn-close box-content w-4 h-4 p-1 text-black border-none rounded-none opacity-50 focus:shadow-none focus:outline-none focus:opacity-100 hover:text-black hover:opacity-75 hover:no-underline"
+                          data-bs-dismiss="modal"
+                          aria-label="Close"
+                        ></button>
+                      </div>
+                      <div class="modal-body relative p-4">
+                        <form
+                          action="/alugar_carro/{{ carro.ID }}"
+                          method="post"
+                          class="space-y-4"
+                        >
                           <input
-                            type="date"
-                            id="data_locacao"
-                            name="data_locacao"
-                            class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                            required
+                            type="hidden"
+                            id="carroIdInput"
+                            name="carro_id"
+                            value="{{ carro.ID }}"
                           />
-                        </div>
 
-                        <!-- Data de Retorno -->
-                        <div>
-                          <label
-                            for="data_retorno"
-                            class="block text-sm font-medium text-gray-700"
-                            >Data de Retorno</label
-                          >
-                          <input
-                            type="date"
-                            id="data_retorno"
-                            name="data_retorno"
-                            class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                            required
-                          />
-                        </div>
-
-                        <!-- Valor da Diária -->
-                        <div>
-                          <label
-                            for="valor_diaria"
-                            class="block text-sm font-medium text-gray-700"
-                            >Valor da Diária</label
-                          >
-                          <div class="mt-1 relative rounded-md shadow-sm">
-                            <div
-                              class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+                          <!-- Cliente -->
+                          <div>
+                            <label
+                              for="cliente"
+                              class="block text-sm font-medium text-gray-700"
+                              >Cliente</label
                             >
-                              <span class="text-gray-500 sm:text-sm">R$</span>
-                            </div>
+                            <select
+                              id="cliente"
+                              name="id_cliente"
+                              class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                              required
+                            >
+                              {% for cliente in clientes %}
+                              <option value="{{ cliente.ID }}">
+                                {{ cliente.NOME }}
+                              </option>
+                              {% endfor %}
+                            </select>
+                          </div>
+
+                          <!-- Data de Locação -->
+                          <div>
+                            <label
+                              for="data_locacao"
+                              class="block text-sm font-medium text-gray-700"
+                              >Data de Locação</label
+                            >
                             <input
-                              type="text"
-                              id="valor_diaria"
-                              name="valor_diaria"
-                              class="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-7 pr-12 sm:text-sm border-gray-300 rounded-md"
-                              placeholder="0.00"
+                              type="date"
+                              id="data_locacao"
+                              name="data_locacao"
+                              class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                               required
                             />
                           </div>
-                        </div>
 
-                        <!-- Botão de Confirmar Aluguel -->
-                        <div>
-                          <button
-                            type="submit"
-                            class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                          >
-                            Confirmar Aluguel
-                          </button>
-                        </div>
-                      </form>
+                          <!-- Data de Retorno -->
+                          <div>
+                            <label
+                              for="data_retorno"
+                              class="block text-sm font-medium text-gray-700"
+                              >Data de Retorno</label
+                            >
+                            <input
+                              type="date"
+                              id="data_retorno"
+                              name="data_retorno"
+                              class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                              required
+                            />
+                          </div>
+
+                          <!-- Valor da Diária -->
+                          <div>
+                            <label
+                              for="valor_diaria"
+                              class="block text-sm font-medium text-gray-700"
+                              >Valor da Diária</label
+                            >
+                            <div class="mt-1 relative rounded-md shadow-sm">
+                              <div
+                                class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+                              >
+                                <span class="text-gray-500 sm:text-sm">R$</span>
+                              </div>
+                              <input
+                                type="text"
+                                id="valor_diaria"
+                                name="valor_diaria"
+                                class="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-7 pr-12 sm:text-sm border-gray-300 rounded-md"
+                                placeholder="0.00"
+                                required
+                              />
+                            </div>
+                          </div>
+
+                          <!-- Botão de Confirmar Aluguel -->
+                          <div>
+                            <button
+                              type="submit"
+                              class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                            >
+                              Confirmar Aluguel
+                            </button>
+                          </div>
+                        </form>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -313,13 +315,13 @@
               <!-- Delete Car Button -->
               <button
                 type="button"
-                class="group relative p-2 bg-red-600 hover:bg-red-700 text-white rounded-full shadow-md transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+                class="group relative h-12 w-12 bg-red-600 hover:bg-red-700 text-white rounded-md shadow-md transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
                 data-bs-toggle="modal"
                 data-bs-target="#deleteCarModal{{ carro.ID }}"
                 data-bs-backdrop="false"
               >
                 <i
-                  class="fas fa-trash-alt text-lg transform group-hover:scale-110 transition-transform duration-300"
+                  class="fas fa-trash-alt text-xl transform group-hover:scale-110 transition-transform duration-300"
                 ></i>
                 <span
                   class="absolute bottom-full left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs rounded py-1 px-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap"
@@ -375,11 +377,12 @@
                     >
                       <button
                         type="button"
-                        class="px-6 py-2.5 bg-indigo-700 text-white font-medium text-xs leading-tight uppercase rounded-full shadow-md hover:bg-indigo-800 hover:shadow-lg focus:bg-indigo-800 focus:shadow-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 active:bg-indigo-900 active:shadow-lg transition duration-150 ease-in-out"
+                        class="px-6 py-3 bg-indigo-700 text-white font-medium text-sm leading-tight uppercase rounded-md shadow-md hover:bg-indigo-800 hover:shadow-lg focus:bg-indigo-800 focus:shadow-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 active:bg-indigo-900 active:shadow-lg transition duration-150 ease-in-out"
                         data-bs-dismiss="modal"
                       >
                         Cancelar
                       </button>
+
                       <form
                         action="/delete_carro/{{ carro.ID }}"
                         method="post"
@@ -387,7 +390,7 @@
                       >
                         <button
                           type="submit"
-                          class="px-6 py-2.5 bg-red-600 text-white font-medium text-xs leading-tight uppercase rounded-full shadow-md hover:bg-red-700 hover:shadow-lg focus:bg-red-700 focus:shadow-lg focus:outline-none focus:ring-2 focus:ring-red-500 active:bg-red-800 active:shadow-lg transition duration-150 ease-in-out {% if not carro.DISPONIBILIDADE %} opacity-50 cursor-not-allowed {% endif %}"
+                          class="px-8 py-3 bg-red-600 text-white font-medium text-sm leading-tight uppercase rounded-md shadow-md hover:bg-red-700 hover:shadow-lg focus:bg-red-700 focus:shadow-lg focus:outline-none focus:ring-2 focus:ring-red-500 active:bg-red-800 active:shadow-lg transition duration-150 ease-in-out {% if not carro.DISPONIBILIDADE %} opacity-50 cursor-not-allowed {% endif %}"
                           {%
                           if
                           not
@@ -408,7 +411,7 @@
 
               <button
                 type="button"
-                class="group relative p-2 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-md transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                class="group relative w-12 h-12 bg-blue-600 hover:bg-blue-700 text-white rounded-md shadow-md transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                 data-bs-toggle="modal"
                 data-bs-target="#editCarModal{{ carro.ID }}"
                 data-bs-backdrop="false"
@@ -417,7 +420,7 @@
                   class="fas fa-edit text-lg transform group-hover:scale-110 transition-transform duration-300"
                 ></i>
                 <span
-                  class="absolute bottom-full left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs rounded py-1 px-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap"
+                  class="absolute bottom-full left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs rounded-md py-2 px-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap"
                 >
                   Editar Carro
                 </span>
@@ -526,18 +529,30 @@
                           </div>
                         </div>
                         <div class="flex items-center space-x-3">
-                          <input
-                            type="checkbox"
-                            id="disponivel"
-                            name="disponibilidade"
-                            class="w-5 h-5 text-purple-600 border-indigo-600 rounded focus:ring-2 focus:ring-purple-500 transition duration-300"
-                            {%
-                            if
-                            carro.DISPONIBILIDADE
-                            %}checked{%
-                            endif
-                            %}
-                          />
+                          <form
+                            action="{{ url_for('devolver_carro', carro_id=carro.ID) }}"
+                            method="POST"
+                          >
+                            <input
+                              type="checkbox"
+                              id="disponivel"
+                              name="disponibilidade"
+                              class="w-5 h-5 text-purple-600 border-indigo-600 rounded focus:ring-2 focus:ring-purple-500 transition duration-300"
+                              {%
+                              if
+                              carro.DISPONIBILIDADE
+                              %}checked{%
+                              endif
+                              %}
+                            />
+                            <button
+                              type="submit"
+                              class="px-4 py-2 bg-green-500 text-white rounded"
+                            >
+                              <i class="fas fa-save mr-2"></i>Salvar Alterações
+                            </button>
+                          </form>
+
                           <label
                             class="text-sm font-medium text-purple-300"
                             for="disponivel"
@@ -552,12 +567,6 @@
                             data-bs-dismiss="modal"
                           >
                             Cancelar
-                          </button>
-                          <button
-                            type="submit"
-                            class="px-6 py-3 bg-purple-600 text-white text-sm font-medium rounded-lg shadow-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition duration-300"
-                          >
-                            <i class="fas fa-save mr-2"></i>Salvar Alterações
                           </button>
                         </div>
                       </form>
