@@ -176,31 +176,41 @@
 
               <!-- Modal de Confirmação de Aluguel -->
               <div
-                class="modal fade"
+                class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto"
                 id="rentCarModal{{ carro.ID }}"
                 tabindex="-1"
                 aria-labelledby="rentCarModalLabel{{ carro.ID }}"
                 aria-hidden="true"
                 data-bs-backdrop="false"
               >
-                <div class="modal-dialog modal-dialog-centered">
-                  <div class="modal-content bg-surface text-gray-200">
-                    <div class="modal-header border-b border-gray-700">
+                <div
+                  class="modal-dialog modal-dialog-centered relative w-auto pointer-events-none"
+                >
+                  <div
+                    class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white rounded-lg outline-none text-current"
+                  >
+                    <div
+                      class="modal-header flex flex-shrink-0 items-center justify-between p-4 border-b border-gray-200 rounded-t-md"
+                    >
                       <h5
-                        class="modal-title text-primary"
+                        class="text-xl font-semibold leading-normal text-gray-800"
                         id="rentCarModalLabel{{ carro.ID }}"
                       >
                         Confirmar Aluguel
                       </h5>
                       <button
                         type="button"
-                        class="btn-close btn-close-white"
+                        class="btn-close box-content w-4 h-4 p-1 text-black border-none rounded-none opacity-50 focus:shadow-none focus:outline-none focus:opacity-100 hover:text-black hover:opacity-75 hover:no-underline"
                         data-bs-dismiss="modal"
                         aria-label="Close"
                       ></button>
                     </div>
-                    <div class="modal-body">
-                      <form action="/alugar_carro/{{ carro.ID }}" method="post">
+                    <div class="modal-body relative p-4">
+                      <form
+                        action="/alugar_carro/{{ carro.ID }}"
+                        method="post"
+                        class="space-y-4"
+                      >
                         <input
                           type="hidden"
                           id="carroIdInput"
@@ -209,14 +219,16 @@
                         />
 
                         <!-- Cliente -->
-                        <div class="mb-3">
-                          <label for="cliente" class="form-label text-gray-400"
+                        <div>
+                          <label
+                            for="cliente"
+                            class="block text-sm font-medium text-gray-700"
                             >Cliente</label
                           >
                           <select
                             id="cliente"
                             name="id_cliente"
-                            class="form-control bg-blue-900 text-white border-gray-700"
+                            class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
                             required
                           >
                             {% for cliente in clientes %}
@@ -228,57 +240,70 @@
                         </div>
 
                         <!-- Data de Locação -->
-                        <div class="mb-3">
+                        <div>
                           <label
                             for="data_locacao"
-                            class="form-label text-gray-400"
+                            class="block text-sm font-medium text-gray-700"
                             >Data de Locação</label
                           >
                           <input
                             type="date"
                             id="data_locacao"
                             name="data_locacao"
-                            class="form-control bg-blue-900 text-white border-gray-700"
+                            class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                             required
                           />
                         </div>
 
                         <!-- Data de Retorno -->
-                        <div class="mb-3">
+                        <div>
                           <label
                             for="data_retorno"
-                            class="form-label text-gray-400"
+                            class="block text-sm font-medium text-gray-700"
                             >Data de Retorno</label
                           >
                           <input
                             type="date"
                             id="data_retorno"
                             name="data_retorno"
-                            class="form-control bg-blue-900 text-white border-gray-700"
+                            class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                             required
                           />
                         </div>
 
                         <!-- Valor da Diária -->
-                        <div class="mb-3">
+                        <div>
                           <label
                             for="valor_diaria"
-                            class="form-label text-gray-400"
+                            class="block text-sm font-medium text-gray-700"
                             >Valor da Diária</label
                           >
-                          <input
-                            type="text"
-                            id="valor_diaria"
-                            name="valor_diaria"
-                            class="form-control bg-blue-900 text-white border-gray-700"
-                            required
-                          />
+                          <div class="mt-1 relative rounded-md shadow-sm">
+                            <div
+                              class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+                            >
+                              <span class="text-gray-500 sm:text-sm">R$</span>
+                            </div>
+                            <input
+                              type="text"
+                              id="valor_diaria"
+                              name="valor_diaria"
+                              class="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-7 pr-12 sm:text-sm border-gray-300 rounded-md"
+                              placeholder="0.00"
+                              required
+                            />
+                          </div>
                         </div>
 
                         <!-- Botão de Confirmar Aluguel -->
-                        <button type="submit" class="btn btn-primary">
-                          Confirmar Aluguel
-                        </button>
+                        <div>
+                          <button
+                            type="submit"
+                            class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                          >
+                            Confirmar Aluguel
+                          </button>
+                        </div>
                       </form>
                     </div>
                   </div>
@@ -291,6 +316,7 @@
                 class="group relative p-2 bg-red-600 hover:bg-red-700 text-white rounded-full shadow-md transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
                 data-bs-toggle="modal"
                 data-bs-target="#deleteCarModal{{ carro.ID }}"
+                data-bs-backdrop="false"
               >
                 <i
                   class="fas fa-trash-alt text-lg transform group-hover:scale-110 transition-transform duration-300"
@@ -534,10 +560,10 @@
             {% endfor %}
           </div>
 
-          <div class="mt-8 text-center">
+          <div class="mt-12 text-center">
             <button
               type="button"
-              class="bg-accent text-white py-2 px-6 rounded-lg text-lg hover:bg-accent-600 transition duration-300"
+              class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-8 rounded text-lg transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50"
               data-bs-toggle="modal"
               data-bs-target="#addCarModal"
             >
@@ -547,73 +573,110 @@
 
           <!-- Modal do Bootstrap -->
           <div
-            class="modal fade"
+            class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto"
             id="addCarModal"
             tabindex="-1"
             aria-labelledby="addCarModalLabel"
             aria-hidden="true"
-            data-bs-backdrop="false"
           >
-            <div class="modal-dialog modal-dialog-centered">
-              <div class="modal-content bg-surface text-gray-200">
-                <div class="modal-header border-b border-gray-700">
-                  <h5 class="modal-title text-primary" id="addCarModalLabel">
+            <div
+              class="modal-dialog modal-dialog-centered relative w-auto pointer-events-none"
+            >
+              <div
+                class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white rounded-lg outline-none text-current"
+              >
+                <div
+                  class="modal-header flex flex-shrink-0 items-center justify-between p-4 border-b border-gray-200 rounded-t-md"
+                >
+                  <h5
+                    class="text-xl font-semibold leading-normal text-gray-800"
+                    id="addCarModalLabel"
+                  >
                     Adicionar Carro
                   </h5>
                   <button
                     type="button"
-                    class="btn-close btn-close-white"
+                    class="btn-close box-content w-4 h-4 p-1 text-black border-none rounded-none opacity-50 focus:shadow-none focus:outline-none focus:opacity-100 hover:text-black hover:opacity-75 hover:no-underline"
                     data-bs-dismiss="modal"
                     aria-label="Close"
                   ></button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body relative p-4">
                   <form action="/add_carro" method="post" class="space-y-4">
-                    <div class="mb-3">
+                    <div>
+                      <label
+                        for="modelo"
+                        class="block text-sm font-medium text-gray-700"
+                        >Modelo</label
+                      >
                       <input
                         type="text"
+                        id="modelo"
                         name="modelo"
-                        placeholder="Modelo"
-                        class="form-control bg-blue-900 text-white border-gray-700"
+                        placeholder="Ex: Civic"
+                        class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                         required
                       />
                     </div>
-                    <div class="mb-3">
+                    <div>
+                      <label
+                        for="ano"
+                        class="block text-sm font-medium text-gray-700"
+                        >Ano</label
+                      >
                       <input
                         type="number"
+                        id="ano"
                         name="ano"
-                        placeholder="Ano"
-                        class="form-control bg-blue-900 text-white border-gray-700"
+                        placeholder="Ex: 2023"
+                        class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                         required
                       />
                     </div>
-                    <div class="mb-3">
+                    <div>
+                      <label
+                        for="marca"
+                        class="block text-sm font-medium text-gray-700"
+                        >Marca</label
+                      >
                       <input
                         type="text"
+                        id="marca"
                         name="marca"
-                        placeholder="Marca"
-                        class="form-control bg-blue-900 text-white border-gray-700"
+                        placeholder="Ex: Honda"
+                        class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                         required
                       />
                     </div>
-                    <div class="form-check">
-                      <input
-                        type="checkbox"
-                        name="disponibilidade"
-                        class="form-check-input bg-blue-900 border-gray-700"
-                        id="disponivel"
-                        checked
-                      />
-                      <label class="form-check-label" for="disponivel"
-                        >Disponível</label
-                      >
+                    <div class="flex items-start">
+                      <div class="flex items-center h-5">
+                        <input
+                          type="checkbox"
+                          id="disponivel"
+                          name="disponibilidade"
+                          class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
+                          checked
+                        />
+                      </div>
+                      <div class="ml-3 text-sm">
+                        <label
+                          for="disponivel"
+                          class="font-medium text-gray-700"
+                          >Disponível</label
+                        >
+                        <p class="text-gray-500">
+                          Marque se o carro está disponível para aluguel
+                        </p>
+                      </div>
                     </div>
-                    <button
-                      type="submit"
-                      class="w-full bg-primary text-white py-2 px-4 rounded-lg hover:bg-primary-600 transition duration-300"
-                    >
-                      <i class="fas fa-plus mr-2"></i>Adicionar Carro
-                    </button>
+                    <div>
+                      <button
+                        type="submit"
+                        class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                      >
+                        <i class="fas fa-plus mr-2"></i>Adicionar Carro
+                      </button>
+                    </div>
                   </form>
                 </div>
               </div>
