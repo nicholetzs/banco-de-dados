@@ -397,6 +397,7 @@
                           carro.DISPONIBILIDADE
                           %}
                           disabled
+                          onmouseenter= "alert('Carro não pode ser excluído, pois está alugado!')"
                           {%
                           endif
                           %}
@@ -545,6 +546,12 @@
                               endif
                               %}
                             />
+                            <label
+                            class="text-sm font-medium text-purple-300"
+                            for="disponivel"
+                          >
+                            Disponível para aluguel
+                          </label>
                             <button
                               type="submit"
                               class="px-4 py-2 bg-green-500 text-white rounded"
@@ -553,12 +560,7 @@
                             </button>
                           </form>
 
-                          <label
-                            class="text-sm font-medium text-purple-300"
-                            for="disponivel"
-                          >
-                            Disponível para aluguel
-                          </label>
+                          
                         </div>
                         <div class="flex justify-end space-x-4 mt-8">
                           <button
