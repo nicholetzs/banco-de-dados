@@ -42,53 +42,7 @@
         },
       };
     </script>
-
-    <style>
-      /* Estilos da Splash Screen */
-      #splash-screen {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        background-color: #000;
-        color: #fff;
-        font-size: 24px;
-        z-index: 9999;
-        flex-direction: column;
-      }
-      .loader {
-        border: 5px solid #f3f3f3;
-        border-top: 5px solid #3498db;
-        border-radius: 50%;
-        width: 50px;
-        height: 50px;
-        animation: spin 1s linear infinite;
-        margin-bottom: 20px;
-      }
-      @keyframes spin {
-        0% {
-          transform: rotate(0deg);
-        }
-        100% {
-          transform: rotate(360deg);
-        }
-      }
-    </style>
   </head>
-  <!-- Splash Screen -->
-  <div id="splash-screen">
-    <div class="loader"></div>
-    <div>Carregando...</div>
-    <p class="mt-3">
-      Nichole Nicolini<br />Lucas Ferrari<br />Fabrício Dias<br />Marlon
-      Lacerda<br />Gustavo Trevezani
-    </p>
-  </div>
-
   <body class="min-h-screen bg-background text-gray-200 font-sans">
     <div class="flex h-screen">
       <!-- Sidebar -->
@@ -182,8 +136,7 @@
         <!-- My main content goes here -->
         <div class="container mx-auto px-4 py-8">
           <h1 class="text-4xl font-bold mb-8 text-center text-primary">
-            Descubra Nossa Frota de Luxo - Carros Cadastrados: {{ carros|length
-            }}
+            Descubra Nossa Frota de Luxo 
           </h1>
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {% for carro in carros %}

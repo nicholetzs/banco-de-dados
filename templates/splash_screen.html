@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Splash Screen</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #2d2a8c, #1a1d64); /* Roxo e azul escuro */
+            color: white;
+            text-align: center;
+        }
+
+        .splash-content {
+            background-color: rgba(0, 0, 0, 0.5); /* Fundo semitransparente para destaque */
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            width: 90%;
+            max-width: 500px;
+        }
+
+        .title {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .authors {
+            font-size: 1.1em;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .continue-button-container {
+            margin-top: 20px;
+        }
+
+        .continue-button {
+            padding: 12px 25px;
+            font-size: 1.2em;
+            background-color: #4e73df; /* Azul claro */
+            color: white;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .continue-button:hover {
+            background-color: #2e5ab9; /* Azul mais escuro para hover */
+        }
+    </style>
+</head>
+<body>
+    <div class="splash-content">
+        <div class="title">Bem-vindo ao Sistema de Gerenciamento de Carros</div>
+        <div class="authors">
+            Desenvolvedores:<br />
+            Nichole Nicolini<br />
+            Lucas Ferrari<br />
+            Fabrício Dias<br />
+            Marlon Lacerda<br />
+            Gustavo Trevezani
+        </div>
+        <div class="continue-button-container">
+            <!-- Formulário para redirecionar para /index -->
+            <form action="/index" method="get">
+                <button class="continue-button" type="submit">Continuar</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

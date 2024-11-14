@@ -3,6 +3,11 @@ from flask import render_template, request, redirect, url_for
 
 def init_app(app, db):
 
+  @app.route('/')
+  def index():
+    # Exibindo a splash screen com informações sobre nossa locadora
+    return render_template('splash_screen.html')
+
   @app.route('/index')
   def list_carros():
     connection = db.get_connection()
@@ -146,7 +151,7 @@ def init_app(app, db):
       cursor.close()
       connection.close()
 
-  @app.route('/reservas')
+  @app.route('/relatorios')
   def list_reservas():
     connection = db.get_connection()
     cursor = connection.cursor(dictionary=True)
@@ -162,9 +167,10 @@ def init_app(app, db):
     reservas = cursor.fetchall()
 
     cursor.execute('SELECT COUNT(*) AS total FROM LOCACAO')
+
     total_locacoes = cursor.fetchone()['total']
 
     cursor.close()
     connection.close()
 
-    return render_template('reservas.html', reservas=reservas, total_locacoes=total_locacoes)
+    return render_template('relatorios.html', reservas=reservas, total_locacoes=total_locacoes)
