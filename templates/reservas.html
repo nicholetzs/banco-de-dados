@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AutoRent - Sistema de Reservas</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome CDN -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              customPurple: "#6B46C1",
+              customBlue: "#3B82F6",
+            },
+          },
+        },
+      };
+    </script>
+  </head>
+  <body class="bg-gray-100">
+    <div class="flex h-screen">
+      <!-- Sidebar -->
+      <nav
+        class="bg-indigo-900 shadow-lg w-64 h-full flex flex-col justify-between"
+      >
+        <div class="px-4 py-6">
+          <div class="flex items-center mb-8">
+            <span class="text-3xl font-bold text-purple-400 mr-2">
+              <i class="fas fa-car-side"></i>
+            </span>
+            <span class="text-2xl font-bold text-purple-300">AutoRent</span>
+          </div>
+          <div class="flex flex-col space-y-2">
+            <a
+              href="#"
+              class="flex items-center text-purple-200 hover:bg-indigo-800 hover:text-white rounded-lg p-2 transition duration-300"
+            >
+              <i class="fas fa-home mr-3 w-5 text-center"></i>
+              <span>Início</span>
+            </a>
+            <a
+              href="/index"
+              class="flex items-center text-purple-200 hover:bg-indigo-800 hover:text-white rounded-lg p-2 transition duration-300"
+            >
+              <i class="fas fa-car mr-3 w-5 text-center"></i>
+              <span>Carros</span>
+            </a>
+
+            <a
+              href="#"
+              class="flex items-center text-purple-200 hover:bg-indigo-800 hover:text-white rounded-lg p-2 transition duration-300"
+            >
+              <i class="fas fa-info-circle mr-3 w-5 text-center"></i>
+              <span>Sobre</span>
+            </a>
+            <a
+              href="#"
+              class="flex items-center text-purple-200 hover:bg-indigo-800 hover:text-white rounded-lg p-2 transition duration-300"
+            >
+              <i class="fas fa-phone mr-3 w-5 text-center"></i>
+              <span>Contato</span>
+            </a>
+            <a
+              href="{{ url_for('list_reservas') }}"
+              class="flex items-center text-purple-200 hover:bg-indigo-800 hover:text-white rounded-lg p-2 transition duration-300"
+            >
+              <i class="fas fa-calendar-alt mr-3 w-5 text-center"></i>
+              <span>Reservas</span>
+            </a>
+            <a
+              href="#"
+              class="flex items-center text-purple-200 hover:bg-indigo-800 hover:text-white rounded-lg p-2 transition duration-300"
+            >
+              <i class="fas fa-map-marker-alt mr-3 w-5 text-center"></i>
+              <span>Localizações</span>
+            </a>
+          </div>
+        </div>
+        <div class="px-4 py-4 bg-indigo-950">
+          <div class="flex items-center mb-4">
+            <img
+              src="/static/img/saturn.jpeg"
+              alt="Avatar do Usuário"
+              class="w-10 h-10 rounded-full mr-3"
+            />
+            <div>
+              <p class="text-sm font-medium text-purple-300">
+                Nichole Nicolini
+              </p>
+              <p class="text-xs text-purple-400">Administrador</p>
+            </div>
+          </div>
+          <div class="flex justify-between">
+            <button
+              class="text-purple-300 hover:text-white transition duration-300"
+            >
+              <i class="fas fa-cog"></i>
+            </button>
+            <button
+              class="text-purple-300 hover:text-white transition duration-300"
+            >
+              <i class="fas fa-sign-out-alt"></i>
+            </button>
+          </div>
+        </div>
+      </nav>
+
+      <!-- Conteúdo Principal -->
+      <main class="flex-1 overflow-y-auto p-8">
+        <h1 class="text-3xl font-bold text-gray-800 mb-6">
+          Reservas de Carros
+        </h1>
+
+        <div class="container mx-auto p-4">
+          <h1 class="text-2xl font-bold mb-4">Resumo de Reservas</h1>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <!-- Carros Disponíveis -->
+            <div class="bg-green-100 p-4 rounded-lg shadow">
+              <h2 class="font-semibold text-lg">Carros Disponíveis</h2>
+              <p class="text-2xl">{{ carros_disponiveis }}</p>
+            </div>
+
+            <!-- Carros Alugados -->
+            <div class="bg-red-100 p-4 rounded-lg shadow">
+              <h2 class="font-semibold text-lg">Carros Alugados</h2>
+              <p class="text-2xl">{{ carros_alugados }}</p>
+            </div>
+
+            <!-- Total de Locações -->
+            <div class="bg-blue-100 p-4 rounded-lg shadow">
+              <h2 class="font-semibold text-lg">Total de Locações</h2>
+              <p class="text-2xl">{{ total_locacoes }}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tabela de Reservas -->
+        <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full table-auto">
+              <thead
+                class="bg-gradient-to-r from-customPurple to-customBlue text-white"
+              >
+                <tr>
+                  <th class="px-4 py-3 text-left">ID do Carro</th>
+                  <th class="px-4 py-3 text-left">Modelo</th>
+                  <th class="px-4 py-3 text-left">Ano</th>
+                  <th class="px-4 py-3 text-left">Marca</th>
+                  <th class="px-4 py-3 text-left">Nome do Cliente</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for reserva in reservas %}
+                <tr class="border-b border-gray-200 hover:bg-gray-100">
+                  <td class="px-4 py-3">{{ reserva.carro_id }}</td>
+                  <td class="px-4 py-3">{{ reserva.MODELO }}</td>
+                  <td class="px-4 py-3">{{ reserva.ANO }}</td>
+                  <td class="px-4 py-3">{{ reserva.MARCA }}</td>
+                  <td class="px-4 py-3">{{ reserva.cliente_nome }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

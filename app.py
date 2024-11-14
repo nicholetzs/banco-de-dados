@@ -174,14 +174,85 @@ class CarroApp:
         cursor.close()
         connection.close()
 
-  def run(self, debug=True):
-    self.app.run(debug=debug)
+    @self.app.route('/reservas')
 
+    def list_reservas():
+        connection = self.db.get_connection()
+        cursor = connection.cursor(dictionary=True)
+
+        # Consulta para obter os carros reservados junto com os dados dos clientes
+        cursor.execute("""
+            SELECT CARROS.ID AS carro_id, CARROS.MODELO, CARROS.ANO, CARROS.MARCA,
+                   CLIENTES.NOME AS cliente_nome, CLIENTES.ID AS cliente_id
+            FROM LOCACAO
+            JOIN CARROS ON LOCACAO.ID_CARRO = CARROS.ID
+            JOIN CLIENTES ON LOCACAO.ID_CLIENTE = CLIENTES.ID
+            WHERE CARROS.DISPONIBILIDADE = FALSE
+        """)
+        reservas = cursor.fetchall()
+
+        cursor.close()
+        connection.close()
+
+        # Passe as reservas para o template 'reservas.html'
+        return render_template('reservas.html', reservas=reservas)
+   
+    @self.app.route('/reservas_sumarizacao')
+
+    def list_reservas_sumarizacao():
+        connection = self.db.get_connection()
+        cursor = connection.cursor(dictionary=True)
+
+    try:
+        # Consulta para contagem de carros disponíveis, carros alugados e locações
+        cursor.execute("""
+            SELECT 
+                (SELECT COUNT(*) FROM CARROS WHERE DISPONIBILIDADE = TRUE) AS carros_disponiveis,
+                (SELECT COUNT(*) FROM CARROS WHERE DISPONIBILIDADE = FALSE) AS carros_alugados,
+                (SELECT COUNT(*) FROM LOCACAO) AS total_locacoes
+        """)
+        relatorio = cursor.fetchone()
+
+        # Extrai os dados de carros disponíveis, alugados e total de locações
+        carros_disponiveis = relatorio['carros_disponiveis']
+        carros_alugados = relatorio['carros_alugados']
+        total_locacoes = relatorio['total_locacoes']
+
+        # Consulta para obter os clientes mais ativos (top 5)
+        cursor.execute("""
+            SELECT CLIENTES.NOME, COUNT(*) AS numero_locacoes
+            FROM LOCACAO
+            JOIN CLIENTES ON LOCACAO.ID_CLIENTE = CLIENTES.ID
+            GROUP BY CLIENTES.NOME
+            ORDER BY numero_locacoes DESC
+            LIMIT 5
+        """)
+        clientes_mais_ativos = cursor.fetchall()  # Obtém uma lista dos clientes mais ativos
+
+        # Renderiza o template com os dados
+        return render_template(
+            'reservas_sumarizacao.html', 
+            carros_disponiveis=carros_disponiveis, 
+            carros_alugados=carros_alugados, 
+            total_locacoes=total_locacoes, 
+            clientes_mais_ativos=clientes_mais_ativos
+        )
+
+    except Exception as e:
+        return f"Ocorreu um erro ao listar as reservas: {str(e)}"
+    finally:
+        cursor.close()
+        connection.close()
+        
+
+  
+def run(self, debug=True):
+    self.app.run(debug=debug)
 
 # Configurações do banco de dados
 db_config = {
     'user': 'root',
-    'password': '',
+    'password': 'cafe123456',
     'host': 'localhost',
     'database': 'DBAUTOCAR',
 }
@@ -190,4 +261,4 @@ db = Database(db_config)
 carro_app = CarroApp(db)
 
 if __name__ == '__main__':
-  carro_app.run()
+    carro_app.run()
