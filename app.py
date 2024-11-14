@@ -1,4 +1,4 @@
-
+import sys
 from flask import Flask, render_template, request, redirect, url_for
 import mysql.connector
 
@@ -46,8 +46,8 @@ class CarroApp:
       cursor = connection.cursor()
 
       cursor.execute(
-          'INSERT INTO CARROS (MODELO, ANO, MARCA, DISPONIBILIDADE) VALUES (%s, %s, %s, %s)',
-          (modelo, ano, marca, disponibilidade)
+        'INSERT INTO CARROS (MODELO, ANO, MARCA, DISPONIBILIDADE) VALUES (%s, %s, %s, %s)',
+        (modelo, ano, marca, disponibilidade)
       )
       connection.commit()
       cursor.close()
@@ -78,8 +78,8 @@ class CarroApp:
         cursor = connection.cursor()
 
         cursor.execute(
-            'UPDATE CARROS SET MODELO = %s, ANO = %s, MARCA = %s, DISPONIBILIDADE = %s WHERE ID = %s',
-            (modelo, ano, marca, disponibilidade, carro_id)
+          'UPDATE CARROS SET MODELO = %s, ANO = %s, MARCA = %s, DISPONIBILIDADE = %s WHERE ID = %s',
+          (modelo, ano, marca, disponibilidade, carro_id)
         )
         connection.commit()
         cursor.close()
@@ -108,7 +108,8 @@ class CarroApp:
 
       try:
         cursor.execute(
-            "SELECT DISPONIBILIDADE FROM CARROS WHERE ID = %s", (carro_id,))
+          "SELECT DISPONIBILIDADE FROM CARROS WHERE ID = %s", (carro_id,)
+        )
         disponibilidade = cursor.fetchone()
 
         if not disponibilidade:
@@ -119,15 +120,14 @@ class CarroApp:
         if not disponibilidade:
           return "O carro já está alugado ou indisponível."
 
-        cursor.execute(""" 
-                    INSERT INTO LOCACAO (ID_CARRO, ID_CLIENTE, DATA_LOCACAO, DATA_RETORNO, VALOR_DIARIA) 
-                    VALUES (%s, %s, %s, %s, %s) 
-                """, (carro_id, cliente_id, data_locacao, data_retorno, valor_diaria))
+        cursor.execute("""
+          INSERT INTO LOCACAO (ID_CARRO, ID_CLIENTE, DATA_LOCACAO, DATA_RETORNO, VALOR_DIARIA)
+          VALUES (%s, %s, %s, %s, %s)
+        """, (carro_id, cliente_id, data_locacao, data_retorno, valor_diaria))
         connection.commit()
 
-        cursor.execute(""" 
-                    UPDATE CARROS SET DISPONIBILIDADE = FALSE WHERE ID = %s 
-                """, (carro_id,))
+        cursor.execute(
+    "UPDATE CARROS SET DISPONIBILIDADE = FALSE WHERE ID = %s", (carro_id,))
         connection.commit()
 
         return redirect(url_for('list_carros'))
@@ -148,20 +148,16 @@ class CarroApp:
       cursor = connection.cursor()
 
       try:
-        # Se o carro for marcado como disponível, remover o cliente associado e devolver o carro
         if disponibilidade:
           cursor.execute("""
-                        UPDATE CARROS 
-                        SET DISPONIBILIDADE = TRUE, CLIENTE_ID = NULL
-                        WHERE ID = %s
-                    """, (carro_id,))
+            UPDATE CARROS
+            SET DISPONIBILIDADE = TRUE, CLIENTE_ID = NULL
+            WHERE ID = %s
+          """, (carro_id,))
           connection.commit()
         else:
-          cursor.execute("""
-                        UPDATE CARROS 
-                        SET DISPONIBILIDADE = FALSE
-                        WHERE ID = %s
-                    """, (carro_id,))
+          cursor.execute(
+    "UPDATE CARROS SET DISPONIBILIDADE = FALSE WHERE ID = %s", (carro_id,))
           connection.commit()
 
         return redirect(url_for('list_carros'))
@@ -174,91 +170,50 @@ class CarroApp:
         cursor.close()
         connection.close()
 
-    @self.app.route('/reservas')
 
-    def list_reservas():
-        connection = self.db.get_connection()
-        cursor = connection.cursor(dictionary=True)
+@self.app.route('/reservas')
+def reservas():
+    # Conectar ao banco de dados
+    connection = self.db.get_connection()
+    cursor = connection.cursor(dictionary=True)
 
-        # Consulta para obter os carros reservados junto com os dados dos clientes
-        cursor.execute("""
-            SELECT CARROS.ID AS carro_id, CARROS.MODELO, CARROS.ANO, CARROS.MARCA,
-                   CLIENTES.NOME AS cliente_nome, CLIENTES.ID AS cliente_id
-            FROM LOCACAO
-            JOIN CARROS ON LOCACAO.ID_CARRO = CARROS.ID
-            JOIN CLIENTES ON LOCACAO.ID_CLIENTE = CLIENTES.ID
-            WHERE CARROS.DISPONIBILIDADE = FALSE
-        """)
-        reservas = cursor.fetchall()
+    # Consulta para pegar as reservas
+    cursor.execute("""
+        SELECT CARROS.ID AS carro_id, CARROS.MODELO, CARROS.ANO, CARROS.MARCA,
+               CLIENTES.NOME AS cliente_nome, CLIENTES.ID AS cliente_id
+        FROM LOCACAO
+        JOIN CARROS ON LOCACAO.ID_CARRO = CARROS.ID
+        JOIN CLIENTES ON LOCACAO.ID_CLIENTE = CLIENTES.ID
+        WHERE CARROS.DISPONIBILIDADE = FALSE
+    """)
+    reservas = cursor.fetchall()
 
-        cursor.close()
-        connection.close()
+    # Consulta para contar o total de locações
+    cursor.execute('SELECT COUNT(*) AS total FROM LOCACAO')
+    total_locacoes = cursor.fetchone()[0]
 
-        # Passe as reservas para o template 'reservas.html'
-        return render_template('reservas.html', reservas=reservas)
-   
-    @self.app.route('/reservas_sumarizacao')
+    # Fechar conexão com o banco de dados
+    cursor.close()
+    connection.close()
 
-    def list_reservas_sumarizacao():
-        connection = self.db.get_connection()
-        cursor = connection.cursor(dictionary=True)
-
-    try:
-        # Consulta para contagem de carros disponíveis, carros alugados e locações
-        cursor.execute("""
-            SELECT 
-                (SELECT COUNT(*) FROM CARROS WHERE DISPONIBILIDADE = TRUE) AS carros_disponiveis,
-                (SELECT COUNT(*) FROM CARROS WHERE DISPONIBILIDADE = FALSE) AS carros_alugados,
-                (SELECT COUNT(*) FROM LOCACAO) AS total_locacoes
-        """)
-        relatorio = cursor.fetchone()
-
-        # Extrai os dados de carros disponíveis, alugados e total de locações
-        carros_disponiveis = relatorio['carros_disponiveis']
-        carros_alugados = relatorio['carros_alugados']
-        total_locacoes = relatorio['total_locacoes']
-
-        # Consulta para obter os clientes mais ativos (top 5)
-        cursor.execute("""
-            SELECT CLIENTES.NOME, COUNT(*) AS numero_locacoes
-            FROM LOCACAO
-            JOIN CLIENTES ON LOCACAO.ID_CLIENTE = CLIENTES.ID
-            GROUP BY CLIENTES.NOME
-            ORDER BY numero_locacoes DESC
-            LIMIT 5
-        """)
-        clientes_mais_ativos = cursor.fetchall()  # Obtém uma lista dos clientes mais ativos
-
-        # Renderiza o template com os dados
-        return render_template(
-            'reservas_sumarizacao.html', 
-            carros_disponiveis=carros_disponiveis, 
-            carros_alugados=carros_alugados, 
-            total_locacoes=total_locacoes, 
-            clientes_mais_ativos=clientes_mais_ativos
-        )
-
-    except Exception as e:
-        return f"Ocorreu um erro ao listar as reservas: {str(e)}"
-    finally:
-        cursor.close()
-        connection.close()
+    # Renderizar a página passando as reservas e o total de locações
+    return render_template(
+        'reservas.html', reservas=reservas, total=total_locacoes)
+    
+def run(self, debug=False):
+        self.app.run(debug=debug)
         
-
-  
-def run(self, debug=True):
-    self.app.run(debug=debug)
 
 # Configurações do banco de dados
 db_config = {
-    'user': 'root',
-    'password': 'cafe123456',
-    'host': 'localhost',
-    'database': 'DBAUTOCAR',
+  'user': 'root',
+  'password': 'cafe123456',
+  'host': 'localhost',
+  'database': 'DBAUTOCAR',
 }
 
 db = Database(db_config)
 carro_app = CarroApp(db)
 
 if __name__ == '__main__':
-    carro_app.run()
+  carro_app.run(debug=True)
