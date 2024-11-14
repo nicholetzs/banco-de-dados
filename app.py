@@ -189,20 +189,13 @@ class CarroApp:
       """)
             reservas = cursor.fetchall()
 
-            cursor.close()
-            connection.close()
-
-            return render_template('reservas.html', reservas=reservas)
-
-        @self.app.route('/reservas')
-        def total_locacoes():
-            connection = self.db.get_connection()
-            cursor = connection.cursor()
             cursor.execute('SELECT COUNT(*) AS total FROM LOCACAO')
-            total = cursor.fetchone()[0]
+            total_locacoes = cursor.fetchone()['total']
+
             cursor.close()
             connection.close()
-            return render_template('reservas.html', total=total)
+
+            return render_template('reservas.html', reservas=reservas, total_locacoes=total_locacoes)
 
     def run(self, debug=True):
         self.app.run(debug=debug)
