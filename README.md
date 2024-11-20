@@ -46,7 +46,7 @@ pip install flask
 python app.py
 
 
-	6.	Acesse a rota /index no seu navegador.
+	
 
 3. Configurando o Banco de Dados no DBeaver
 
